@@ -1,0 +1,14 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+resolver = "2"
+members = [
+    "./coutio",
+    "./exclusion",
+    "./inclusion",
+]
+
+[workspace.package]
+edition = "2021"
+authors = ["Oleh Martsokha <o.martsokha@gmail.com>"]
+license = "MIT"
