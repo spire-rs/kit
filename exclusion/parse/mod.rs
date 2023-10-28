@@ -1,48 +1,26 @@
 use std::cmp::min;
 use std::io::{BufReader, Read};
+use std::sync::Arc;
+
+use crate::{parse::lexer::Directive, BYTE_LIMIT};
+pub use access::AccessResult;
+use url::Url;
+
+mod access;
+mod inner;
+mod lexer;
+mod rule;
+
+#[doc(hidden)]
+#[cfg(feature = "inner")]
+pub use crate::parse::inner::{RobotsInner, RobotsInnerBuilder};
+#[cfg(not(feature = "inner"))]
+use crate::parse::inner::{RobotsInner, RobotsInnerBuilder};
 
 #[cfg(feature = "serde")]
 use ::serde::{Deserialize, Serialize};
-
-pub use access::AccessResult;
-
-use crate::{parse::lexer::Directive, url::Url, BYTE_LIMIT};
-
-mod access;
-mod lexer;
-mod rule;
-mod rules;
 #[cfg(feature = "serde")]
 mod serde;
-
-/// Attempts to parse the user agent.
-fn parse_user_agent(u: &[u8]) -> Option<String> {
-    let u = String::from_utf8(u.to_vec()).ok()?;
-    let u = u.trim().to_lowercase();
-    Some(u)
-}
-
-/// Attempts to parse the valid `Url` address.
-fn parse_sitemap(u: &[u8]) -> Option<Url> {
-    let u = String::from_utf8(u.to_vec()).ok()?;
-    let u = Url::parse(u.as_str()).ok()?;
-    Some(u)
-}
-
-/// Attempts to parse the valid matching `Rule`.
-fn parse_rule(u: &[u8], allow: bool) -> Option<rule::Rule> {
-    let u = String::from_utf8(u.to_vec()).ok()?;
-    let u = rule::Rule::new(u.as_str(), allow).ok()?;
-    Some(u)
-}
-
-/// Attempts to parse the valid `Duration`.
-fn parse_crawl_delay(u: &[u8]) -> Option<std::time::Duration> {
-    let u = String::from_utf8(u.to_vec()).ok()?;
-    let u = u.parse::<f64>().ok()?;
-    let u = std::time::Duration::try_from_secs_f64(u).ok()?;
-    Some(u)
-}
 
 /// All user agents group, used as a default for user-agents that don't have
 /// an explicitly defined matching group.
@@ -91,10 +69,9 @@ pub const ALL_UAS: &str = "*";
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Robots {
+    user_agent: Arc<String>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    rules: rules::Rules,
-    user_agent: String,
-    sitemaps: Vec<Url>,
+    inner: Arc<RobotsInner>,
 }
 
 impl Robots {
@@ -124,13 +101,16 @@ impl Robots {
 
     /// Creates a new instance from the list of directives.
     fn from_directives(directives: &[Directive], user_agent: &str) -> Self {
+        fn parse_user_agent(u: &[u8]) -> Option<String> {
+            let u = String::from_utf8(u.to_vec()).ok()?;
+            let u = u.trim().to_lowercase();
+            Some(u)
+        }
+
         let (user_agent, mut captures_rules) = Self::find_agent(directives, user_agent);
         let mut captures_group = false;
 
-        let mut rules = Vec::new();
-        let mut delay = None;
-        let mut sitemaps = Vec::new();
-
+        let mut inner = RobotsInnerBuilder::default();
         for directive in directives {
             match directive {
                 Directive::UserAgent(u) => {
@@ -143,28 +123,22 @@ impl Robots {
                     captures_group = true;
                 }
 
-                Directive::Sitemap(u) => {
-                    if let Some(u) = parse_sitemap(u) {
-                        sitemaps.push(u);
-                    }
+                Directive::Sitemap(data) => {
+                    let _ = inner.try_sitemap(data);
                 }
 
-                Directive::Allow(u) | Directive::Disallow(u) => {
+                Directive::Allow(data) | Directive::Disallow(data) => {
                     captures_group = false;
                     if captures_rules {
                         let allow = matches!(directive, Directive::Allow(_));
-                        if let Some(u) = parse_rule(u, allow) {
-                            rules.push(u)
-                        }
+                        let _ = inner.try_rule(data, allow);
                     }
                 }
 
-                Directive::CrawlDelay(u) => {
+                Directive::CrawlDelay(data) => {
                     captures_group = false;
                     if captures_rules {
-                        if let Some(u) = parse_crawl_delay(u) {
-                            delay = delay.map(|c| min(c, u)).or(Some(u));
-                        }
+                        let _ = inner.try_delay(data);
                     }
                 }
 
@@ -173,9 +147,8 @@ impl Robots {
         }
 
         Self {
-            user_agent,
-            rules: rules::Rules::from_rules(rules, delay),
-            sitemaps,
+            user_agent: Arc::new(user_agent),
+            inner: Arc::new(inner.build()),
         }
     }
 }
@@ -204,15 +177,15 @@ impl Robots {
         let robots = &robots[0..limit];
 
         // Replaces '\x00' with '\n'.
-        let robots = robots.iter().map(|u| match u {
-            b'\x00' => b'\n',
-            v => *v,
-        });
+        let robots: Vec<_> = robots
+            .iter()
+            .map(|u| match u {
+                b'\x00' => b'\n',
+                v => *v,
+            })
+            .collect();
 
-        let robots: Vec<_> = robots.collect();
-        let robots = robots.as_slice();
-
-        let directives = lexer::into_directives(robots);
+        let directives = lexer::into_directives(robots.as_slice());
         Self::from_directives(directives.as_slice(), user_agent)
     }
 
@@ -264,11 +237,11 @@ impl Robots {
     /// assert!(!r.is_relative_allowed("/example/nope.txt"));
     /// ```
     pub fn from_access(access: AccessResult, user_agent: &str) -> Self {
-        use AccessResult::*;
+        use AccessResult as AR;
         match access {
-            Successful(txt) => Self::from_bytes(txt, user_agent),
-            Redirect | Unavailable => Self::from_always(true, user_agent),
-            Unreachable => Self::from_always(false, user_agent),
+            AR::Successful(txt) => Self::from_bytes(txt, user_agent),
+            AR::Redirect | AR::Unavailable => Self::from_always(true, user_agent),
+            AR::Unreachable => Self::from_always(false, user_agent),
         }
     }
 
@@ -282,10 +255,10 @@ impl Robots {
     /// assert!(r.is_relative_allowed("/example/nope.txt"));
     /// ```
     pub fn from_always(always: bool, user_agent: &str) -> Self {
+        let inner = RobotsInner::new(always, None);
         Self {
-            user_agent: user_agent.trim().to_lowercase(),
-            rules: rules::Rules::from_always(always, None),
-            sitemaps: vec![],
+            user_agent: Arc::new(user_agent.to_string()),
+            inner: Arc::new(inner),
         }
     }
 
@@ -320,7 +293,7 @@ impl Robots {
     /// assert!(!r.is_relative_allowed("/invalid/path.txt"));
     /// ```
     pub fn is_relative_allowed(&self, addr: &str) -> bool {
-        self.rules.is_allowed(addr)
+        self.inner.is_allowed(addr)
     }
 
     /// Returns true if the path is allowed for the user-agent.
@@ -366,7 +339,7 @@ impl Robots {
     /// assert_eq!(r.is_always(), Some(false));
     /// ```
     pub fn is_always(&self) -> Option<bool> {
-        self.rules.is_always()
+        self.inner.is_always()
     }
 
     /// Returns the longest matching user-agent.
@@ -377,13 +350,14 @@ impl Robots {
     /// let txt = r#"
     ///     User-Agent: foo
     ///     User-Agent: foobot
+    ///     User-Agent: foobot-images
     /// "#.as_bytes();
     ///
     /// let r = Robots::from_bytes(txt, "foobot-search");
     /// assert_eq!(r.user_agent(), "foobot");
     /// ```
     pub fn user_agent(&self) -> &str {
-        &self.user_agent
+        self.user_agent.as_ref()
     }
 
     /// Returns the crawl-delay of the user-agent if specified.
@@ -401,7 +375,7 @@ impl Robots {
     /// assert_eq!(r.crawl_delay(), Some(Duration::from_secs(5)));
     /// ```
     pub fn crawl_delay(&self) -> Option<std::time::Duration> {
-        self.rules.crawl_delay()
+        self.inner.crawl_delay()
     }
 
     /// Returns all collected sitemaps.
@@ -417,20 +391,20 @@ impl Robots {
     /// let r = Robots::from_bytes(txt, "foobot");
     /// assert_eq!(r.sitemaps().len(), 2);
     /// ```
-    pub fn sitemaps(&self) -> &Vec<Url> {
-        &self.sitemaps
+    pub fn sitemaps(&self) -> &[Url] {
+        self.inner.sitemaps()
     }
 
-    /// Returns the total amount of applied rules unless constucted
+    /// Returns the total amount of applied rules unless constructed
     /// with (or reduced to) the global rule.
     pub fn len(&self) -> Option<usize> {
-        self.rules.len()
+        self.inner.len()
     }
 
-    /// Returns true if there are no applied rules i.e. it is constucted
+    /// Returns true if there are no applied rules i.e. it is constructed
     /// with (or reduced to) the global rule.
     pub fn is_empty(&self) -> Option<bool> {
-        self.len().map(|u| u == 0)
+        self.inner.is_empty()
     }
 }
 

@@ -189,7 +189,7 @@ impl Rule {
 
     /// Returns true if matches everything.
     #[cfg(feature = "optimal")]
-    pub fn is_universal(&self) -> bool {
+    pub(crate) fn is_universal(&self) -> bool {
         match &self.wildcard {
             None => self.pattern == "/",
             Some(Wildcard::Ending(_)) => false,

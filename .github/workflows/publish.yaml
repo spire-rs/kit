@@ -9,6 +9,10 @@ name: Publish
 jobs:
   cd:
     name: CD
+    strategy:
+      fail-fast: false
+      matrix:
+        crates: [ countio, robotxt, sitemapo ]
     runs-on: ubuntu-latest
     steps:
 
@@ -21,6 +25,7 @@ jobs:
           toolchain: stable
 
       - name: Publish
-        run: cargo publish --token ${CRATES_TOKEN}
+        run: cargo publish --token ${CRATES_TOKEN} -p ${CRATE_NAME}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+          CRATE_NAME: ${{ matrix.crates }}

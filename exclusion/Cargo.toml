@@ -31,7 +31,8 @@ default = ["builder", "parser"]
 builder = []
 parser = ["dep:nom", "dep:bstr", "dep:regex"]
 optimal = []
-serde = ["dep:serde", "url/serde", "serde/derive"]
+serde = ["dep:serde", "url/serde", "serde/derive", "serde/rc"]
+inner = [] # unstable, private
 
 [dependencies]
 url = { version = "2.4.1" }

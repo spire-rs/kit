@@ -22,6 +22,8 @@ programming language with the support of `txt` & `xml` formats, and `video`,
 
 ### Features
 
+> **Warning** : `extension` are not yet implemented.
+
 - `extension` to enable all XML sitemap extensions. **Enabled by default**.
 - `tokio` to enable asynchronous parsers & builders.
 

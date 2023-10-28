@@ -1,5 +1,4 @@
-/// The `AccessResult` enum represents the result of the
-/// `robots.txt` retrieval attempt.
+/// The result of the `robots.txt` retrieval attempt.
 ///
 /// See [`crate::Robots::from_access`].
 /// Also see 2.3.1. Access Results in the specification.

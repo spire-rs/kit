@@ -1,11 +1,9 @@
-use std::fmt::Formatter;
-
 use serde::de::{Error, MapAccess, Visitor};
 use serde::ser::SerializeStruct;
 use serde::{Deserializer, Serializer};
 
+use crate::parse::inner::AlwaysRules;
 use crate::parse::rule::Rule;
-use crate::parse::rules::AlwaysRules;
 
 impl serde::Serialize for AlwaysRules {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -43,7 +41,7 @@ impl<'de> serde::Deserialize<'de> for AlwaysRules {
         impl<'de> Visitor<'de> for AlwaysRulesVisitor {
             type Value = AlwaysRules;
 
-            fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("struct AlwaysRules")
             }
 

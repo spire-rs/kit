@@ -79,8 +79,8 @@ impl<D: AsyncSeek + Unpin> AsyncSeek for Counter<D> {
 mod test {
     use super::*;
 
+    use futures_util::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt};
     use futures_util::io::{BufReader, BufWriter};
-    use futures_util::io::{AsyncBufReadExt, AsyncWriteExt, AsyncReadExt};
 
     #[futures_test::test]
     async fn reader() -> Result<()> {
