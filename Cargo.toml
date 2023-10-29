@@ -3,7 +3,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "./coutio",
+    "./countio",
     "./exclusion",
     "./inclusion",
 ]
@@ -12,3 +12,19 @@ members = [
 edition = "2021"
 authors = ["Oleh Martsokha <o.martsokha@gmail.com>"]
 license = "MIT"
+
+[workspace.dependencies]
+tokio = { version = "1.33.0", default-features = false }
+futures-io = { version = "0.3.29", default-features = false }
+futures-util = { version = "0.3.29", default-features = false }
+futures-test = { version = "0.3.29", default-features = false }
+
+url = { version = "2.4.1" }
+async-trait = { version = "0.1.74" }
+thiserror = { version = "1.0.50" }
+
+serde = { version = "1.0.190 "}
+serde_json = { version = "1.0.107" }
+
+time = { version = "0.3.30", default-features = false }
+timext = { version = "0.3.2", default-features = false }

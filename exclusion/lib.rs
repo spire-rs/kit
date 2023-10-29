@@ -21,12 +21,6 @@ pub enum Error {
     /// unexpected parsing error.
     #[error("unexpected parsing error: {0}")]
     Url(#[from] url::ParseError),
-
-    /// Unable to create the expected path or the retrieval request
-    /// to the `robots.txt` file: unexpected parsing error.
-    #[cfg(feature = "http")]
-    #[error("unexpected parsing error: {0}")]
-    Http(#[from] http::Error),
 }
 
 /// A specialized [`Result`] type for [`robotxt`] operations.

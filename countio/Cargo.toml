@@ -2,7 +2,7 @@
 
 [package]
 name = "countio"
-version = "0.2.16"
+version = "0.3.0"
 readme = "./README.md"
 
 edition = { workspace = true }
@@ -28,24 +28,17 @@ path = "./lib.rs"
 
 [features]
 default = ["std"]
+full = ["std", "async-tokio", "async-futures"]
+
 std = []
-futures = ["dep:futures-io"]
-tokio = ["dep:tokio"]
+async-tokio = ["dep:tokio"]
+async-futures = ["dep:futures-io"]
 
 [dependencies]
-tokio = { version = "1.33.0", optional = true, default-features = false, features = [
-] }
-futures-io = { version = "0.3.29", optional = true, default-features = false, features = [
-    "std",
-] }
+tokio = { workspace = true, optional = true }
+futures-io = { workspace = true, optional = true, features = ["std"] }
 
 [dev-dependencies]
-tokio = { version = "1.33.0", default-features = false, features = [
-    "rt",
-    "macros",
-    "io-util",
-] }
-futures-util = { version = "0.3.29", default-features = false, features = [] }
-futures-test = { version = "0.3.29", default-features = false, features = [
-    "std",
-] }
+tokio = { workspace = true, features = ["rt", "macros", "io-util"] }
+futures-util = { workspace = true }
+futures-test = { workspace = true, features = ["std"] }

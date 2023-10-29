@@ -2,16 +2,16 @@ use serde::de::{Error, MapAccess, Visitor};
 use serde::ser::SerializeStruct;
 use serde::{Deserializer, Serializer};
 
-use crate::parse::inner::AlwaysRules;
+use crate::parse::inner::Rules;
 use crate::parse::rule::Rule;
 
-impl serde::Serialize for AlwaysRules {
+impl serde::Serialize for Rules {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         match self {
-            AlwaysRules::Rules(rules) => {
+            Rules::Rules(rules) => {
                 let (allow, disallow): (Vec<_>, Vec<_>) =
                     rules.iter().partition(|u| u.is_allowed());
                 let allow: Vec<_> = allow.iter().map(|u| u.pattern().to_string()).collect();
@@ -22,7 +22,7 @@ impl serde::Serialize for AlwaysRules {
                 s.serialize_field("disallow", &disallow)?;
                 s.end()
             }
-            AlwaysRules::Always(always) => {
+            Rules::Always(always) => {
                 let mut s = serializer.serialize_struct("AlwaysRules", 1)?;
                 s.serialize_field("always", always)?;
                 s.end()
@@ -31,7 +31,7 @@ impl serde::Serialize for AlwaysRules {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for AlwaysRules {
+impl<'de> serde::Deserialize<'de> for Rules {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -39,7 +39,7 @@ impl<'de> serde::Deserialize<'de> for AlwaysRules {
         struct AlwaysRulesVisitor;
 
         impl<'de> Visitor<'de> for AlwaysRulesVisitor {
-            type Value = AlwaysRules;
+            type Value = Rules;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("struct AlwaysRules")
@@ -84,7 +84,7 @@ impl<'de> serde::Deserialize<'de> for AlwaysRules {
                     if allow.is_some() || disallow.is_some() {
                         Err(Error::custom("Fields 'allow' and 'disallow' should not be present when 'always' is present."))
                     } else {
-                        Ok(AlwaysRules::Always(always))
+                        Ok(Rules::Always(always))
                     }
                 } else if let (Some(allow), Some(disallow)) = (allow, disallow) {
                     let a = |u: &String| Rule::new(u.as_str(), true).ok();
@@ -95,7 +95,7 @@ impl<'de> serde::Deserialize<'de> for AlwaysRules {
                     r.extend(disallow.iter().filter_map(d));
                     r.sort();
 
-                    Ok(AlwaysRules::Rules(r))
+                    Ok(Rules::Rules(r))
                 } else {
                     Err(Error::missing_field(
                         "either 'always' or 'allow' and 'disallow'",
