@@ -119,18 +119,13 @@ impl RobotsInner {
     pub fn try_is_allowed(&self, path: &str) -> Option<bool> {
         match self.rules {
             AlwaysRules::Always(always) => Some(always),
-            AlwaysRules::Rules(ref rules) => {
-                let path = normalize_path(path);
-                if path.eq("/robots.txt") {
-                    return Some(true);
-                }
-
-                let path = path.as_str();
-                match rules.iter().find(|r| r.is_match(path)) {
-                    Some(rule) => Some(rule.is_allowed()),
-                    None => None,
-                }
-            }
+            AlwaysRules::Rules(ref rules) => match normalize_path(path).as_str() {
+                "/robots.txt" => Some(true),
+                path => rules
+                    .iter()
+                    .find(|r| r.is_match(path))
+                    .map(|rule| rule.is_allowed()),
+            },
         }
     }
 

@@ -7,9 +7,26 @@
 /// This may be extended in the future so exhaustive matching is discouraged.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    /// Unable to create the expected path to the `robots.txt` file.
-    #[error("url parsing error: {0}")]
+    /// Unable to create the expected path to the `robots.txt` file:
+    /// cannot be a base url.
+    #[error("cannot be a base url")]
+    CannotBeBase,
+
+    /// Unable to create the expected path to the `robots.txt` file:
+    /// unexpected address scheme, expected `http` or `https`.
+    #[error("unexpected addr scheme: `{scheme}`, expected `http` or `https`")]
+    WrongScheme { scheme: String },
+
+    /// Unable to create the expected path to the `robots.txt` file:
+    /// unexpected parsing error.
+    #[error("unexpected parsing error: {0}")]
     Url(#[from] url::ParseError),
+
+    /// Unable to create the expected path or the retrieval request
+    /// to the `robots.txt` file: unexpected parsing error.
+    #[cfg(feature = "http")]
+    #[error("unexpected parsing error: {0}")]
+    Http(#[from] http::Error),
 }
 
 /// A specialized [`Result`] type for [`robotxt`] operations.
