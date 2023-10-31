@@ -5,130 +5,11 @@ use std::time::Duration;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-use crate::parse::lexer::{into_directives, Directive};
+use crate::parse::lexer::Lexer;
+use crate::parse::parser::Parser;
 use crate::parse::rule::Rule;
 use crate::paths::normalize_path;
-use crate::{ALL_UAS, BYTE_LIMIT};
-
-#[derive(Debug, Default)]
-struct Builder {
-    captures_group: bool,
-    captures_rules: bool,
-
-    pub longest_match: String,
-    pub rules: Vec<Rule>,
-    pub crawl_delay: Option<Duration>,
-    pub sitemaps: Vec<Url>,
-}
-
-impl Builder {
-    /// Creates a new [`Builder`] from the list of directives.
-    pub fn from_directives(directives: &[Directive], user_agent: &str) -> Self {
-        let mut state = Builder::from_longest_match(directives, user_agent);
-
-        for directive in directives {
-            match directive {
-                Directive::UserAgent(user_agent) => {
-                    if let Some(user_agent) = Self::try_user_agent(user_agent) {
-                        if !state.captures_group || !state.captures_rules {
-                            state.captures_rules = user_agent == state.longest_match;
-                        }
-                    }
-
-                    state.captures_group = true;
-                }
-
-                Directive::Allow(data) | Directive::Disallow(data) => {
-                    state.captures_group = false;
-                    if state.captures_rules {
-                        let allow = matches!(directive, Directive::Allow(_));
-                        state.try_rule(data, allow);
-                    }
-                }
-
-                Directive::CrawlDelay(data) => {
-                    state.captures_group = false;
-                    if state.captures_rules {
-                        state.try_delay(data);
-                    }
-                }
-
-                Directive::Sitemap(data) => state.try_sitemap(data),
-                Directive::Unknown(_) => continue,
-            }
-        }
-
-        state
-    }
-
-    /// Creates initial [`Builder`] state from the list of directives.
-    fn from_longest_match(directives: &[Directive], user_agent: &str) -> Self {
-        let (longest_match, captures_rules) = Self::find_longest_match(directives, user_agent);
-        Self {
-            longest_match,
-            captures_rules,
-            ..Self::default()
-        }
-    }
-
-    /// Finds the longest matching user-agent and if the parser should check non-assigned rules.
-    fn find_longest_match(directives: &[Directive], user_agent: &str) -> (String, bool) {
-        // Collects all uas.
-        let all_uas = directives.iter().filter_map(|ua2| match ua2 {
-            Directive::UserAgent(ua2) => std::str::from_utf8(ua2).ok(),
-            _ => None,
-        });
-
-        // Filters out non-acceptable uas.
-        let user_agent = user_agent.trim().to_lowercase();
-        let acceptable_uas = all_uas
-            .map(|ua| ua.trim().to_lowercase())
-            .filter(|ua| user_agent.starts_with(ua.as_str()));
-
-        // Finds the longest ua in the acceptable pool.
-        let selected_ua = acceptable_uas
-            .max_by(|lhs, rhs| lhs.len().cmp(&rhs.len()))
-            .unwrap_or(ALL_UAS.to_string());
-
-        // Determines if it should check non-assigned rules.
-        let check_non_assigned = selected_ua == ALL_UAS;
-        (selected_ua, check_non_assigned)
-    }
-
-    /// Attempts to parse the `User-Agent`.
-    fn try_user_agent(data: &[u8]) -> Option<String> {
-        let data = String::from_utf8(data.to_vec()).ok()?;
-        Some(data.trim().to_lowercase())
-    }
-
-    /// Attempts to parse and store the valid matching `Rule`.
-    pub fn try_rule(&mut self, data: &[u8], allow: bool) {
-        let data = String::from_utf8(data.to_vec()).ok();
-        let rule = data.map(|data| Rule::new(&data, allow).ok());
-        if let Some(rule) = rule.flatten() {
-            self.rules.push(rule);
-        }
-    }
-
-    /// Attempts to parse and store the valid `Duration` as a `crawl-delay`.
-    pub fn try_delay(&mut self, data: &[u8]) {
-        let data = String::from_utf8(data.to_vec()).ok();
-        self.crawl_delay = data
-            .and_then(|data| data.parse::<f64>().ok())
-            .and_then(|secs| Duration::try_from_secs_f64(secs).ok())
-            .map(|curr| (self.crawl_delay.unwrap_or(curr), curr))
-            .map(|(prev, curr)| prev.min(curr));
-    }
-
-    /// Attempts to parse and store the valid `Url` address as a `sitemap`.
-    pub fn try_sitemap(&mut self, data: &[u8]) {
-        let data = String::from_utf8(data.to_vec()).ok();
-        let addr = data.and_then(|data| Url::parse(data.as_str()).ok());
-        if let Some(addr) = addr {
-            self.sitemaps.push(addr);
-        }
-    }
-}
+use crate::BYTE_LIMIT;
 
 /// The [`Rules`] enum determines if the [RobotsInner::is_allowed] results
 /// from the set of [`Rule`]s or the single provided global rule.
@@ -166,18 +47,8 @@ impl RobotsInner {
             })
             .collect();
 
-        let directives = into_directives(robots.as_slice());
-        Self::from_directives(directives.as_slice(), user_agent)
-    }
-
-    /// Creates a new [`RobotsInner`] from the list of directives.
-    // TODO: Remove overlapping rules.
-    fn from_directives(directives: &[Directive], user_agent: &str) -> Self {
-        let mut state = Builder::from_directives(directives, user_agent);
-
-        // Rules are sorted by length and permission i.e.
-        // 5 > 4, 5 allow > 5 disallow.
-        state.rules.sort();
+        let directives = Lexer::parse_tokens(&robots);
+        let state = Parser::parse_rules(&directives, user_agent);
 
         Self {
             user_agent: state.longest_match,
@@ -187,8 +58,10 @@ impl RobotsInner {
         }
     }
 
-    // TODO: Desc.
+    // Applies optimizations if enabled.
     fn optimize(rules: Vec<Rule>) -> Rules {
+        // TODO: Remove overlapping rules.
+
         #[cfg(feature = "optimal")]
         if rules.is_empty() || rules.iter().all(|r| r.is_allowed()) {
             // Empty or all allow.
@@ -214,7 +87,7 @@ impl RobotsInner {
         }
     }
 
-    /// Returns `Some(true)` if there is an `allow` or global rule.
+    /// Returns `Some(true)` if there is an explicit `allow` or the global rule.
     /// NOTE: Expects relative path.
     pub fn try_is_allowed(&self, path: &str) -> Option<bool> {
         match self.rules {
@@ -232,6 +105,7 @@ impl RobotsInner {
     /// Returns true if the relative path is allowed for this set of rules.
     /// NOTE: Expects relative path.
     pub fn is_allowed(&self, path: &str) -> bool {
+        // Returns true is there is no rule matching the path.
         self.try_is_allowed(path).unwrap_or(true)
     }
 
@@ -259,7 +133,7 @@ impl RobotsInner {
     }
 
     /// Returns the total amount of applied rules unless constructed
-    /// with (or reduced to) the global rule.
+    /// with (or optimized to) the global rule.
     pub fn len(&self) -> Option<usize> {
         match &self.rules {
             Rules::Rules(vec) => Some(vec.len()),
@@ -268,7 +142,7 @@ impl RobotsInner {
     }
 
     /// Returns true if there are no applied rules i.e. it is constructed
-    /// with (or reduced to) the global rule.
+    /// with (or optimized to) the global rule.
     pub fn is_empty(&self) -> Option<bool> {
         self.len().map(|len| len == 0)
     }
@@ -278,6 +152,7 @@ impl RobotsInner {
 #[cfg(feature = "optimal")]
 mod optimal_output {
     use super::*;
+    use crate::ALL_UAS;
 
     #[test]
     fn from() {
@@ -318,45 +193,47 @@ mod optimal_output {
 #[cfg(test)]
 mod precedence_rules {
     use super::*;
-
-    fn create(allow: &str, disallow: &str) -> RobotsInner {
-        let txt = format!("Allow: {} \n Disallow: {}", allow, disallow);
-        RobotsInner::from_bytes(txt.as_bytes(), ALL_UAS)
-    }
+    use crate::ALL_UAS;
 
     #[test]
     fn simple() {
-        let r = create("/p", "/");
+        let t = b"Allow: /p \n Disallow: /";
+        let r = RobotsInner::from_bytes(t, ALL_UAS);
         assert!(r.is_allowed("/page"));
     }
 
     #[test]
     fn restrictive() {
-        let r = create("/folder", "/folder");
+        let t = b"Allow: /folder \n Disallow: /folder";
+        let r = RobotsInner::from_bytes(t, ALL_UAS);
         assert!(r.is_allowed("/folder/page"));
     }
 
     #[test]
     fn restrictive2() {
-        let r = create("/page", "/*.ph");
+        let t = b"Allow: /page \n Disallow: /*.ph";
+        let r = RobotsInner::from_bytes(t, ALL_UAS);
         assert!(r.is_allowed("/page.php5"));
     }
 
     #[test]
     fn longer() {
-        let r = create("/page", "/*.htm");
+        let t = b"Allow: /page \n Disallow: /*.htm";
+        let r = RobotsInner::from_bytes(t, ALL_UAS);
         assert!(!r.is_allowed("/page.htm"));
     }
 
     #[test]
     fn specific() {
-        let r = create("/$", "/");
+        let t = b"Allow: /$ \n Disallow: /";
+        let r = RobotsInner::from_bytes(t, ALL_UAS);
         assert!(r.is_allowed("/"));
     }
 
     #[test]
     fn specific2() {
-        let r = create("/$", "/");
+        let t = b"Allow: /$ \n Disallow: /";
+        let r = RobotsInner::from_bytes(t, ALL_UAS);
         assert!(!r.is_allowed("/page.htm"));
     }
 }

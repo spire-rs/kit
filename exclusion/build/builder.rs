@@ -116,12 +116,11 @@ impl Display for RobotsBuilder {
 
 #[cfg(test)]
 mod builder {
-    use crate::Error;
-
+    use crate::Result;
     use super::*;
 
     #[test]
-    fn readme() -> Result<(), Error> {
+    fn readme() -> Result<()> {
         let txt = RobotsBuilder::default()
             .header("Robots.txt: Start")
             .group(["foobot"], |u| {

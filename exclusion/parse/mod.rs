@@ -10,6 +10,7 @@ use inner::RobotsInner;
 mod access;
 mod inner;
 mod lexer;
+mod parser;
 mod rule;
 
 #[cfg(feature = "serde")]
@@ -177,7 +178,28 @@ impl Robots {
 }
 
 impl Robots {
-    /// Returns true if the path is allowed for the user-agent.
+    /// Returns `Some(true)` if there is an explicit `allow` or the global rule.
+    /// NOTE: Expects relative path.
+    ///
+    /// ```rust
+    /// use robotxt::Robots;
+    ///
+    /// let txt = r#"
+    ///     User-Agent: foobot
+    ///     Allow: /example/
+    ///     Disallow: /example/nope.txt
+    /// "#.as_bytes();
+    ///
+    /// let r = Robots::from_bytes(txt, "foobot");
+    /// assert_eq!(r.try_is_relative_allowed("/example/yeah.txt"), Some(true));
+    /// assert_eq!(r.try_is_relative_allowed("/example/nope.txt"), Some(false));
+    /// assert_eq!(r.try_is_relative_allowed("/invalid/path.txt"), None);
+    /// ```
+    pub fn try_is_relative_allowed(&self, addr: &str) -> Option<bool> {
+        self.inner.try_is_allowed(addr)
+    }
+
+    /// Returns `true` if the path is allowed for the user-agent.
     /// NOTE: Expects relative path.
     ///
     /// ```rust
@@ -197,6 +219,42 @@ impl Robots {
     /// ```
     pub fn is_relative_allowed(&self, addr: &str) -> bool {
         self.inner.is_allowed(addr)
+    }
+
+    /// Returns `Some(true)` if there is an explicit `allow` or the global rule.
+    /// NOTE: Expects relative path.
+    ///
+    /// ```rust
+    /// use url::Url;
+    /// use robotxt::Robots;
+    ///
+    /// let txt = r#"
+    ///     User-Agent: foobot
+    ///     Allow: /example/
+    ///     Disallow: /example/nope.txt
+    /// "#.as_bytes();
+    ///
+    /// let r = Robots::from_bytes(txt, "foobot");
+    /// let base = Url::parse("https://example.com/").unwrap();
+    /// assert_eq!(r.try_is_absolute_allowed(&base.join("/example/yeah.txt").unwrap()), Some(true));
+    /// assert_eq!(r.try_is_absolute_allowed(&base.join("/example/nope.txt").unwrap()), Some(false));
+    /// assert_eq!(r.try_is_absolute_allowed(&base.join("/invalid/path.txt").unwrap()), None);
+    /// ```
+    pub fn try_is_absolute_allowed(&self, addr: &Url) -> Option<bool> {
+        let path = addr.path().to_owned();
+
+        let query = addr
+            .query()
+            .map(|u| "?".to_owned() + u)
+            .unwrap_or("".to_owned());
+
+        let frag = addr
+            .fragment()
+            .map(|u| "#".to_owned() + u)
+            .unwrap_or("".to_owned());
+
+        let relative = path + &query + &frag;
+        self.inner.try_is_allowed(&relative)
     }
 
     /// Returns true if the path is allowed for the user-agent.
@@ -220,14 +278,7 @@ impl Robots {
     /// assert!(!r.is_absolute_allowed(&base.join("/invalid/path.txt").unwrap()));
     /// ```
     pub fn is_absolute_allowed(&self, addr: &Url) -> bool {
-        let path = addr.path().to_owned();
-        let query = addr.query().map(|u| "?".to_owned() + u);
-        let query = query.unwrap_or("".to_owned());
-        let frag = addr.fragment().map(|u| "#".to_owned() + u);
-        let frag = frag.unwrap_or("".to_owned());
-
-        let rel = path + &query + &frag;
-        self.is_relative_allowed(&rel)
+        self.try_is_absolute_allowed(addr).unwrap_or(true)
     }
 
     /// Returns `Some(_)` if the site is fully allowed or disallowed.
@@ -299,13 +350,13 @@ impl Robots {
     }
 
     /// Returns the total amount of applied rules unless constructed
-    /// with (or reduced to) the global rule.
+    /// with (or optimized to) the global rule.
     pub fn len(&self) -> Option<usize> {
         self.inner.len()
     }
 
     /// Returns true if there are no applied rules i.e. it is constructed
-    /// with (or reduced to) the global rule.
+    /// with (or optimized to) the global rule.
     pub fn is_empty(&self) -> Option<bool> {
         self.inner.is_empty()
     }

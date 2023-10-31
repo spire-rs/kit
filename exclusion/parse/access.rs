@@ -1,7 +1,9 @@
 /// The result of the `robots.txt` retrieval attempt.
 ///
-/// See [`crate::Robots::from_access`].
+/// See [`Robots::from_access`].
 /// Also see 2.3.1. Access Results in the specification.
+///
+/// [`Robots::from_access`]: crate::Robots::from_access
 #[derive(Debug)]
 pub enum AccessResult<'a> {
     /// 2.3.1.1.  Successful Access
