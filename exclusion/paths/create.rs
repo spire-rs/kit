@@ -7,7 +7,7 @@ use crate::{Error, Result};
 /// use url::Url;
 /// use robotxt::create_url;
 ///
-/// let path = "https://user:pass@example.com/sample.txt";
+/// let path = "https://user:pass@example.com/foo/sample.txt";
 /// let path = Url::parse(path).unwrap();
 /// let robots = create_url(&path).unwrap().to_string();
 /// assert_eq!(robots, "https://example.com/robots.txt")
@@ -42,7 +42,7 @@ mod test {
 
     #[test]
     fn from_url() -> Result<()> {
-        let path = "https://user:pass@example.com/sample.txt";
+        let path = "https://user:pass@example.com/foo/sample.txt";
         let path = url::Url::parse(path).unwrap();
 
         let robots = create_url(&path)?.to_string();
