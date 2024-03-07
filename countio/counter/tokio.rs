@@ -88,10 +88,10 @@ impl<D: AsyncSeek + Unpin> AsyncSeek for Counter<D> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     use tokio::io::{AsyncBufReadExt, AsyncWriteExt};
     use tokio::io::{AsyncReadExt, BufReader, BufWriter};
+
+    use super::*;
 
     #[tokio::test]
     async fn reader() -> Result<()> {

@@ -1,4 +1,4 @@
-use std::fmt::{Debug, Formatter};
+use std::fmt;
 use std::io::{BufRead, Read, Seek, Write};
 use std::io::{Result, SeekFrom};
 
@@ -41,8 +41,8 @@ impl<D: Seek> Seek for Counter<D> {
     }
 }
 
-impl<D: Debug> Debug for Counter<D> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl<D: fmt::Debug> fmt::Debug for Counter<D> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Counter")
             .field("inner", &self.inner)
             .field("read", &self.reader_bytes)
@@ -53,9 +53,9 @@ impl<D: Debug> Debug for Counter<D> {
 
 #[cfg(test)]
 mod test {
-    use super::*;
-
     use std::io::{BufReader, BufWriter};
+
+    use super::*;
 
     #[test]
     fn reader() -> Result<()> {
