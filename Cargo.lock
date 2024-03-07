@@ -475,7 +475,6 @@ dependencies = [
  "quick-xml",
  "thiserror",
  "time",
- "timext",
  "tokio",
  "url",
 ]
@@ -547,27 +546,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ad70d68dba9e1f8aceda7aa6711965dfec1cac869f311a51bd08b3a2ccbce20"
 dependencies = [
  "time-core",
-]
-
-[[package]]
-name = "timext"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0569ac315ef2d74360be127fc1348ba3d6cfc05cb3bdb8acb8a952ad4c627aaf"
-dependencies = [
- "thiserror",
- "time",
- "timext-month",
-]
-
-[[package]]
-name = "timext-month"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95d31a48b7ce41cc73dd900a699f5dde5e333d08c9c826cdd3838abf767f732a"
-dependencies = [
- "thiserror",
- "time",
 ]
 
 [[package]]

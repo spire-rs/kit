@@ -116,8 +116,8 @@ impl Display for RobotsBuilder {
 
 #[cfg(test)]
 mod builder {
-    use crate::Result;
     use super::*;
+    use crate::Result;
 
     #[test]
     fn readme() -> Result<()> {

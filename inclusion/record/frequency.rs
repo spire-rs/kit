@@ -1,8 +1,7 @@
-use std::fmt::{Display, Formatter};
+use std::fmt;
 
 use thiserror::Error;
 use time::{ext::NumericalDuration, OffsetDateTime};
-use timext::ext::NumericCalendarDuration;
 
 /// [Frequency] parsing error.
 #[derive(Debug, Error)]
@@ -57,6 +56,7 @@ impl Frequency {
     }
 
     /// Calculates the date when the entry becomes outdated.
+    /// TODO: Fix months and years.
     ///
     /// ```rust
     /// use time::macros::datetime;
@@ -73,8 +73,8 @@ impl Frequency {
             Hourly => Some(date + 1.hours()),
             Daily => Some(date + 1.days()),
             Weekly => Some(date + 7.days()),
-            Monthly => Some(date + 1.months()),
-            Yearly => Some(date + 1.years()),
+            Monthly => Some(date + 30.days()),
+            Yearly => Some(date + 365.days()),
         }
     }
 
@@ -100,9 +100,9 @@ impl Frequency {
     }
 }
 
-impl Display for Frequency {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let underlying = match self {
+impl fmt::Display for Frequency {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let inner = match self {
             Self::Always => "always",
             Self::Hourly => "hourly",
             Self::Daily => "daily",
@@ -112,7 +112,7 @@ impl Display for Frequency {
             Self::Never => "never",
         };
 
-        Display::fmt(underlying, f)
+        fmt::Display::fmt(inner, f)
     }
 }
 

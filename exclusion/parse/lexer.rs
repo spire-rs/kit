@@ -179,8 +179,8 @@ impl Lexer {
         input: &'a [u8],
         spellings: impl Alt<&'a [u8], O, E>,
     ) -> NomResult<&'a [u8], &'a [u8]>
-        where
-            NomErr<NomError<&'a [u8]>>: From<NomErr<E>>,
+    where
+        NomErr<NomError<&'a [u8]>>: From<NomErr<E>>,
     {
         // Tries to match to the spelling list.
         let (input, _) = preceded(space0, alt(spellings))(input)?;

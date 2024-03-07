@@ -1,16 +1,28 @@
 # OS
+Thumbs.db
 .DS_Store
 
-# IDE
-.fleet/
-.idea/
+# Editors
+.vs/
 .vscode/
+.idea/
+.fleet/
 
-# Rust
-/debug
-/target
+# Lang: Rust
+debug/
+target/
 **/*.rs.bk
 
-# Coverage
-/coverage
-build_rs_cov.profraw
+# Output
+dist/
+build/
+
+# Environment
+env/
+.env
+.env*
+
+# Logs
+logs/
+*.log
+*.log*

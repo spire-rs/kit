@@ -47,7 +47,6 @@ countio = { version = "0.2.15" }
 quick-xml = { version = "0.31.0" }
 bytes = { version = "1.5.0", features = [] }
 time = { workspace = true, features = ["parsing", "formatting"] }
-timext = { workspace = true, features = ["month"] }
 
 tokio = { workspace = true, optional = true }
 async-trait = { workspace = true, optional = true }

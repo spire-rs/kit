@@ -5,16 +5,17 @@
 [![Crate Version][crates-badge]][crates-url]
 [![Crate Coverage][coverage-badge]][coverage-url]
 
-**Also check out other `xwde` projects [here](https://github.com/xwde).**
+**Also check out other `spire-rs` projects
+[here](https://github.com/spire-rs).**
 
-[action-badge]: https://img.shields.io/github/actions/workflow/status/xwde/kit/build.yaml?branch=main&label=build&logo=github&style=flat-square
-[action-url]: https://github.com/xwde/kit/actions/workflows/build.yaml
+[action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yaml?branch=main&label=build&logo=github&style=flat-square
+[action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yaml
 [crates-badge]: https://img.shields.io/crates/v/sitemapo.svg?logo=rust&style=flat-square
 [crates-url]: https://crates.io/crates/sitemapo
 [docs-badge]: https://img.shields.io/docsrs/sitemapo?logo=Docs.rs&style=flat-square
 [docs-url]: http://docs.rs/sitemapo
-[coverage-badge]: https://img.shields.io/codecov/c/github/xwde/kit?logo=codecov&logoColor=white&style=flat-square
-[coverage-url]: https://app.codecov.io/gh/xwde/kit
+[coverage-badge]: https://img.shields.io/codecov/c/github/spire-rs/kit?logo=codecov&logoColor=white&style=flat-square
+[coverage-url]: https://app.codecov.io/gh/spire-rs/kit
 
 The implementation of the Sitemap (or URL inclusion) protocol in the Rust
 programming language with the support of `txt` & `xml` formats, and `video`,

@@ -1,12 +1,12 @@
-mod entry;
-mod frequency;
-mod index;
-mod priority;
-
 pub use entry::*;
 pub use frequency::*;
 pub use index::*;
 pub use priority::*;
+
+mod entry;
+mod frequency;
+mod index;
+mod priority;
 
 /// All formats limit a single sitemap to 50,000 URLs.
 /// See [Build and submit a Sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap#sitemap-best-practices).

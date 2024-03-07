@@ -17,10 +17,10 @@ use crate::record::{Frequency, Priority};
 /// ```
 #[derive(Debug, Clone)]
 pub struct Entry {
-    pub(crate) location: Url,
-    pub(crate) modified: Option<OffsetDateTime>,
-    pub(crate) priority: Option<Priority>,
-    pub(crate) frequency: Option<Frequency>,
+    pub location: Url,
+    pub modified: Option<OffsetDateTime>,
+    pub priority: Option<Priority>,
+    pub frequency: Option<Frequency>,
 }
 
 impl Entry {
@@ -50,26 +50,6 @@ impl Entry {
     pub fn with_frequency(mut self, frequency: Frequency) -> Self {
         self.frequency = Some(frequency);
         self
-    }
-
-    /// Returns the given location.
-    pub fn location(&self) -> &Url {
-        &self.location
-    }
-
-    /// Returns the given modify timestamp.
-    pub fn modified(&self) -> Option<&OffsetDateTime> {
-        self.modified.as_ref()
-    }
-
-    /// Returns the given priority.
-    pub fn priority(&self) -> Option<&Priority> {
-        self.priority.as_ref()
-    }
-
-    /// Returns the given update frequency.
-    pub fn frequency(&self) -> Option<&Frequency> {
-        self.frequency.as_ref()
     }
 }
 

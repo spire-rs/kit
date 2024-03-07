@@ -19,7 +19,7 @@ jobs:
       - name: Check out
         uses: actions/checkout@v3
 
-      - name: Set up Rust
+      - name: Set up ${{ matrix.toolchain }} Rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}

@@ -13,8 +13,8 @@ use url::Url;
 /// ```
 #[derive(Debug, Clone)]
 pub struct Index {
-    pub(crate) location: Url,
-    pub(crate) modified: Option<OffsetDateTime>,
+    pub location: Url,
+    pub modified: Option<OffsetDateTime>,
 }
 
 impl Index {
@@ -32,16 +32,6 @@ impl Index {
             modified: Some(modified),
             ..self
         }
-    }
-
-    /// Returns the given location.
-    pub fn location(&self) -> &Url {
-        &self.location
-    }
-
-    /// Returns the given modify timestamp.
-    pub fn modified(&self) -> Option<&OffsetDateTime> {
-        self.modified.as_ref()
     }
 }
 

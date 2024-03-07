@@ -1,4 +1,4 @@
-use std::fmt::{Display, Formatter};
+use std::fmt;
 use std::num::ParseFloatError;
 
 use thiserror::Error;
@@ -83,9 +83,9 @@ impl Default for Priority {
     }
 }
 
-impl Display for Priority {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        Display::fmt(format!("{:.1}", self.0).as_str(), f)
+impl fmt::Display for Priority {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(format!("{:.1}", self.0).as_str(), f)
     }
 }
 
