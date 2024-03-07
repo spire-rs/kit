@@ -51,10 +51,10 @@ mod parse;
 
 #[doc(hidden)]
 pub mod prelude {
-    pub use super::{Error, Result};
     #[cfg(feature = "builder")]
     pub use super::build::*;
     #[cfg(feature = "parser")]
     pub use super::parse::*;
     pub use super::paths::*;
+    pub use super::{Error, Result};
 }
