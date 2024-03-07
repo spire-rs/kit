@@ -2,15 +2,15 @@
 
 [package]
 name = "countio"
-version = "0.2.16"
+version = "0.2.17"
 readme = "./README.md"
 
 edition = { workspace = true }
 license = { workspace = true }
 authors = { workspace = true }
 
-repository = "https://github.com/xwde/kit/countio"
-homepage = "https://github.com/xwde/kit/countio"
+repository = "https://github.com/spire-rs/kit/countio"
+homepage = "https://github.com/spire-rs/kit/countio"
 documentation = "https://docs.rs/countio"
 categories = ["parsing", "asynchronous"]
 keywords = ["byte", "tokio", "futures", "parsing"]
@@ -28,11 +28,11 @@ path = "./lib.rs"
 
 [features]
 default = ["std"]
-full = ["std", "async-tokio", "async-futures"]
+full = ["std", "tokio", "futures"]
 
 std = []
-async-tokio = ["dep:tokio"]
-async-futures = ["dep:futures-io"]
+tokio = ["dep:tokio"]
+futures = ["dep:futures-io"]
 
 [dependencies]
 tokio = { workspace = true, optional = true }

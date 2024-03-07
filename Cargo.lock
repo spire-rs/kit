@@ -98,7 +98,7 @@ dependencies = [
 
 [[package]]
 name = "countio"
-version = "0.2.16"
+version = "0.2.17"
 dependencies = [
  "futures-io",
  "futures-test",
@@ -406,7 +406,7 @@ checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 
 [[package]]
 name = "robotxt"
-version = "0.5.1"
+version = "0.6.1"
 dependencies = [
  "bstr",
  "nom",
@@ -469,7 +469,7 @@ checksum = "38b58827f4464d87d377d175e90bf58eb00fd8716ff0a62f80356b5e61555d0d"
 
 [[package]]
 name = "sitemapo"
-version = "0.3.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
