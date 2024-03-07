@@ -9,12 +9,19 @@
 [here](https://github.com/spire-rs).**
 
 [action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yaml?branch=main&label=build&logo=github&style=flat-square
+
 [action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yaml
+
 [crates-badge]: https://img.shields.io/crates/v/sitemapo.svg?logo=rust&style=flat-square
+
 [crates-url]: https://crates.io/crates/sitemapo
+
 [docs-badge]: https://img.shields.io/docsrs/sitemapo?logo=Docs.rs&style=flat-square
+
 [docs-url]: http://docs.rs/sitemapo
+
 [coverage-badge]: https://img.shields.io/codecov/c/github/spire-rs/kit?logo=codecov&logoColor=white&style=flat-square
+
 [coverage-url]: https://app.codecov.io/gh/spire-rs/kit
 
 The implementation of the Sitemap (or URL inclusion) protocol in the Rust
@@ -88,7 +95,7 @@ fn main() -> Result<(), CustomError> {
 - [Sitemaps Format](https://www.sitemaps.org/protocol.html) on Sitemap.org
 - [Sitemaps FAQ](https://www.sitemaps.org/faq.htm) on Sitemap.org
 
-### Crates
+### Other crates
 
 - [svmk/rust-sitemap](https://crates.io/crates/sitemap)
 - [goddtriffin/sitemap-rs](https://crates.io/crates/sitemap-rs)

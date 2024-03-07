@@ -12,7 +12,7 @@ pub struct FrequencyError;
 ///
 /// This value provides general information to search engines and
 /// may not correlate exactly to how often they crawl the page.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Frequency {
     /// Describes documents that change each time they are accessed.
     Always,

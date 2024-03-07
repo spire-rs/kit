@@ -2,7 +2,7 @@
 
 [package]
 name = "sitemapo"
-version = "0.3.0"
+version = "0.2.0"
 readme = "./README.md"
 
 edition = { workspace = true }
@@ -50,7 +50,7 @@ time = { workspace = true, features = ["parsing", "formatting"] }
 
 tokio = { workspace = true, optional = true }
 async-trait = { workspace = true, optional = true }
-isolang = { version = "2.3.0", optional = true, features = [] }
+isolang = { version = "2.4.0", optional = true, features = [] }
 
 [dev-dependencies]
 time = { workspace = true, features = ["macros"] }

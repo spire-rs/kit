@@ -80,8 +80,8 @@ impl<W> IndexBuilder<W> {
         }
 
         let format = &Iso8601::<{ CONFIG }>;
-        let location = record.location().to_string();
-        let modified = record.modified().map(|u| u.format(format).unwrap());
+        let location = record.location.to_string();
+        let modified = record.modified.map(|u| u.format(format).unwrap());
 
         let mut temp = Writer::new(Vec::new());
         let element = temp.create_element(SITEMAP);

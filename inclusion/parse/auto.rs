@@ -166,7 +166,6 @@ where
         E: std::error::Error + From<Error>,
         A: Fn(Url) -> Result<R, E>,
     {
-        use crate::parse::Parser;
         while !self.is_empty() {
             if let Some(parser) = self.plain.as_mut() {
                 if let Ok(Some(record)) = parser.read() {
@@ -186,7 +185,7 @@ where
 
             if let Some(parser) = self.index.as_mut() {
                 if let Ok(Some(record)) = parser.read() {
-                    let reader = (fetcher)(record.location().clone())?;
+                    let reader = (fetcher)(record.location.clone())?;
                     // Ignore nested sitemap index or error.
                     match Scanner::from_sync(reader).ok() {
                         Some(Scanner::Index(_)) | None => {}
@@ -228,7 +227,6 @@ where
         F: std::future::Future<Output = Result<R, E>>,
         A: Fn(Url) -> F,
     {
-        use crate::parse::AsyncParser;
         while !self.is_empty() {
             if let Some(parser) = self.plain.as_mut() {
                 if let Ok(Some(record)) = parser.read().await {
@@ -248,7 +246,7 @@ where
 
             if let Some(parser) = self.index.as_mut() {
                 if let Ok(Some(record)) = parser.read().await {
-                    let reader = (fetcher)(record.location().clone()).await?;
+                    let reader = (fetcher)(record.location.clone()).await?;
                     // Ignore nested sitemap index or error.
                     match Scanner::from_async(reader).await.ok() {
                         Some(Scanner::Index(_)) | None => {}

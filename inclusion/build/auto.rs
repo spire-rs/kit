@@ -1,6 +1,6 @@
 use url::Url;
 
-use crate::build::{Builder, EntryBuilder, IndexBuilder};
+use crate::build::{EntryBuilder, IndexBuilder};
 use crate::record::Entry;
 use crate::Error;
 

@@ -17,7 +17,7 @@ pub enum PriorityError {
 /// Valid values range from 0.0 to 1.0. This value does not affect how your
 /// pages are compared to pages on other sites. It only lets the search engines
 /// know which pages you deem most important for the crawlers.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Priority(f32);
 
 impl Priority {
@@ -79,7 +79,7 @@ impl Priority {
 
 impl Default for Priority {
     fn default() -> Self {
-        Self::AVG.clone()
+        Self::AVG
     }
 }
 

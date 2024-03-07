@@ -2,7 +2,7 @@
 
 [package]
 name = "countio"
-version = "0.3.0"
+version = "0.2.16"
 readme = "./README.md"
 
 edition = { workspace = true }
