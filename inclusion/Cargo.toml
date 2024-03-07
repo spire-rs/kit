@@ -9,8 +9,8 @@ edition = { workspace = true }
 license = { workspace = true }
 authors = { workspace = true }
 
-repository = "https://github.com/xwde/kit/inclusion"
-homepage = "https://github.com/xwde/kit/inclusion"
+repository = "https://github.com/spire-rs/kit/inclusion"
+homepage = "https://github.com/spire-rs/kit/inclusion"
 documentation = "https://docs.rs/sitemapo"
 categories = ["parser-implementations", "web-programming"]
 keywords = ["sitemap", "crawler", "parser"]

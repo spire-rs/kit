@@ -3,10 +3,8 @@ use std::fmt::{Display, Formatter};
 
 use url::Url;
 
-use crate::{build::format_comment, GroupBuilder};
-
-#[cfg(feature = "parser")]
-use crate::Robots;
+use crate::build::format_comment;
+use crate::GroupBuilder;
 
 /// The set of formatted `user-agent` groups that can be written
 /// in the `robots.txt` compliant format.
@@ -20,7 +18,7 @@ pub struct RobotsBuilder {
 }
 
 impl RobotsBuilder {
-    /// Creates a new instance with default settings.
+    /// Creates a new [`RobotsBuilder`] with default settings.
     pub fn new() -> Self {
         Self::default()
     }
@@ -90,12 +88,14 @@ impl RobotsBuilder {
     }
 
     /// Parses the constructed output.
-    /// See [Robots::from_bytes].
+    /// See [`Robots::from_bytes`].
+    ///
+    /// [`Robots`]: crate::Robots
     #[cfg(feature = "parser")]
     #[cfg_attr(docsrs, doc(cfg(feature = "parser")))]
-    pub fn parse(&self, user_agent: &str) -> Robots {
+    pub fn parse(&self, user_agent: &str) -> crate::Robots {
         let txt = self.to_string();
-        Robots::from_bytes(txt.as_bytes(), user_agent)
+        crate::Robots::from_bytes(txt.as_bytes(), user_agent)
     }
 }
 
@@ -116,8 +116,7 @@ impl Display for RobotsBuilder {
 
 #[cfg(test)]
 mod builder {
-    use super::*;
-    use crate::Result;
+    use crate::{Result, RobotsBuilder};
 
     #[test]
     fn readme() -> Result<()> {

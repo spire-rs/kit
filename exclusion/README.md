@@ -23,14 +23,13 @@ programming language with the support of `crawl-delay`, `sitemap` and universal
 
 ### Features
 
-- `builder` to enable `robotxt::{RobotsBuilder, GroupBuilder}`. This feature is
-  **enabled by default**.
-- `parser` to enable `robotxt::{Robots}`. This feature is **enabled by
+- `parser` to enable `robotxt::{Robots}`. **Enabled by default**.
+- `builder` to enable `robotxt::{RobotsBuilder, GroupBuilder}`. **Enabled by
   default**.
-- `optimal` to enable overlapping rule eviction and global rule optimizations
-  (this may result in longer parsing times but potentially faster matching).
-- `serde` to enable a custom `serde::{Deserialize, Serialize}` implementation,
-  allowing for the caching of related rules.
+- `optimal` to enable optimize overlapping and global rules, potentially
+  improving matching speed at the cost of longer parsing times.
+- `serde` to enable `serde::{Deserialize, Serialize}` implementation, allowing
+  the caching of related rules.
 
 ### Examples
 
@@ -45,9 +44,9 @@ fn main() {
       Disallow: *
       Allow: /example/
       Disallow: /example/nope.txt
-    "#.as_bytes();
+    "#;
 
-    let r = Robots::from_bytes(txt, "foobot");
+    let r = Robots::from_bytes(txt.as_bytes(), "foobot");
     assert!(r.is_relative_allowed("/example/yeah.txt"));
     assert!(!r.is_relative_allowed("/example/nope.txt"));
     assert!(!r.is_relative_allowed("/invalid/path.txt"));

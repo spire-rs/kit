@@ -9,19 +9,12 @@
 [here](https://github.com/spire-rs).**
 
 [action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yaml?branch=main&label=build&logo=github&style=flat-square
-
 [action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yaml
-
 [crates-badge]: https://img.shields.io/crates/v/countio.svg?logo=rust&style=flat-square
-
 [crates-url]: https://crates.io/crates/countio
-
 [docs-badge]: https://img.shields.io/docsrs/countio?logo=Docs.rs&style=flat-square
-
 [docs-url]: http://docs.rs/countio
-
 [coverage-badge]: https://img.shields.io/codecov/c/github/spire-rs/kit?logo=codecov&logoColor=white&style=flat-square
-
 [coverage-url]: https://app.codecov.io/gh/spire-rs/kit
 
 The wrapper struct to enable byte counting for `std::io::Read`,

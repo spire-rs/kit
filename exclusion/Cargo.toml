@@ -2,15 +2,15 @@
 
 [package]
 name = "robotxt"
-version = "0.6.0"
+version = "0.6.1"
 readme = "./README.md"
 
 edition = { workspace = true }
 license = { workspace = true }
 authors = { workspace = true }
 
-repository = "https://github.com/xwde/kit/exclusion"
-homepage = "https://github.com/xwde/kit/exclusion"
+repository = "https://github.com/spire-rs/kit/exclusion"
+homepage = "https://github.com/spire-rs/kit/exclusion"
 documentation = "https://docs.rs/robotxt"
 categories = ["asynchronous", "web-programming"]
 keywords = ["crawler", "scraper", "web", "framework"]
