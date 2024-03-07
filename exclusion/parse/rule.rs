@@ -3,7 +3,7 @@ use std::sync::OnceLock;
 
 use regex::{escape, Regex, RegexBuilder};
 
-use crate::normalize_path;
+use crate::paths::normalize_path;
 
 /// An error type indicating that a `Wildcard` could not be parsed correctly.
 #[derive(Debug, thiserror::Error)]

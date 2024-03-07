@@ -28,11 +28,11 @@ path = "./lib.rs"
 
 [features]
 default = ["std"]
-full = ["std", "async-tokio", "async-futures"]
+full = ["std", "tokio", "futures"]
 
 std = []
-async-tokio = ["dep:tokio"]
-async-futures = ["dep:futures-io"]
+tokio = ["dep:tokio"]
+futures = ["dep:futures-io"]
 
 [dependencies]
 tokio = { workspace = true, optional = true }

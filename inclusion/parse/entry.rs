@@ -227,7 +227,7 @@ mod test {
         parser.close()?;
 
         let exp = Url::parse("https://www.example.com/file1.html");
-        assert_eq!(record.location(), &exp.unwrap());
+        assert_eq!(record.location, exp.unwrap());
 
         Ok(())
     }
@@ -243,7 +243,7 @@ mod test {
         parser.close().await?;
 
         let exp = Url::parse("https://www.example.com/file1.html");
-        assert_eq!(record.location(), &exp.unwrap());
+        assert_eq!(record.location, exp.unwrap());
 
         Ok(())
     }

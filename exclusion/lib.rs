@@ -6,10 +6,10 @@
 pub use url;
 
 #[cfg(feature = "builder")]
-pub use build::*;
+pub use build::{GroupBuilder, RobotsBuilder};
 #[cfg(feature = "parser")]
-pub use parse::*;
-pub use paths::*;
+pub use parse::{AccessResult, Robots, ALL_UAS};
+pub use paths::{create_url, BYTE_LIMIT};
 
 /// Unrecoverable failure during `robots.txt` building or parsing.
 ///
@@ -29,7 +29,7 @@ pub enum Error {
 
     /// Unable to create the expected path to the `robots.txt` file:
     /// unexpected parsing error.
-    #[error("parsing error: {0}")]
+    #[error("url parsing error: {0}")]
     Url(#[from] url::ParseError),
 }
 

@@ -2,12 +2,12 @@
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 mod stdlib;
 
-#[cfg(feature = "async-futures")]
-#[cfg_attr(docsrs, doc(cfg(feature = "async-futures")))]
+#[cfg(feature = "futures")]
+#[cfg_attr(docsrs, doc(cfg(feature = "futures")))]
 mod futures;
 
-#[cfg(feature = "async-tokio")]
-#[cfg_attr(docsrs, doc(cfg(feature = "async-tokio")))]
+#[cfg(feature = "tokio")]
+#[cfg_attr(docsrs, doc(cfg(feature = "tokio")))]
 mod tokio;
 
 /// The `Counter<D>` struct adds byte counting to any reader or writer.

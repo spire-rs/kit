@@ -24,8 +24,8 @@ and `tokio` crates.
 ### Features
 
 - `std` to enable `std::io::{Read, Write, Seek}`. **Enabled by default**.
-- `async-futures` to enable `futures_io::{AsyncRead, AsyncWrite, AsyncSeek}`.
-- `async-tokio` to enable `tokio::io::{AsyncRead, AsyncWrite, AsyncSeek}`.
+- `futures` to enable `futures_io::{AsyncRead, AsyncWrite, AsyncSeek}`.
+- `tokio` to enable `tokio::io::{AsyncRead, AsyncWrite, AsyncSeek}`.
 
 ### Examples
 

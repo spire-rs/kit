@@ -26,8 +26,8 @@ programming language with the support of `crawl-delay`, `sitemap` and universal
 - `parser` to enable `robotxt::{Robots}`. **Enabled by default**.
 - `builder` to enable `robotxt::{RobotsBuilder, GroupBuilder}`. **Enabled by
   default**.
-- `optimal` to enable optimize overlapping and global rules, potentially
-  improving matching speed at the cost of longer parsing times.
+- `optimal` to optimize overlapping and global rules, potentially improving
+  matching speed at the cost of longer parsing times.
 - `serde` to enable `serde::{Deserialize, Serialize}` implementation, allowing
   the caching of related rules.
 

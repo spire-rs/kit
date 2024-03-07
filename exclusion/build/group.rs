@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
 
 use crate::build::format_comment;
-use crate::normalize_path;
+use crate::paths::normalize_path;
 
 /// The single formatted `user-agent` group.
 ///
