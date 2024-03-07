@@ -1,0 +1,44 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "countio"
+version = "0.2.16"
+readme = "./README.md"
+
+edition = { workspace = true }
+license = { workspace = true }
+authors = { workspace = true }
+
+repository = "https://github.com/xwde/kit/countio"
+homepage = "https://github.com/xwde/kit/countio"
+documentation = "https://docs.rs/countio"
+categories = ["parsing", "asynchronous"]
+keywords = ["byte", "tokio", "futures", "parsing"]
+description = """
+Byte counting for std::io::{Read, Write, Seek} and
+its async variants from futures and tokio.
+"""
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[lib]
+path = "./lib.rs"
+
+[features]
+default = ["std"]
+full = ["std", "async-tokio", "async-futures"]
+
+std = []
+async-tokio = ["dep:tokio"]
+async-futures = ["dep:futures-io"]
+
+[dependencies]
+tokio = { workspace = true, optional = true }
+futures-io = { workspace = true, optional = true, features = ["std"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt", "macros", "io-util"] }
+futures-util = { workspace = true }
+futures-test = { workspace = true, features = ["std"] }

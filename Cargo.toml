@@ -1,0 +1,28 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+resolver = "2"
+members = [
+    "./countio",
+    "./exclusion",
+    "./inclusion",
+]
+
+[workspace.package]
+edition = "2021"
+authors = ["Oleh Martsokha <o.martsokha@gmail.com>"]
+license = "MIT"
+
+[workspace.dependencies]
+tokio = { version = "1.36.0", default-features = false }
+futures-io = { version = "0.3.30", default-features = false }
+futures-util = { version = "0.3.30", default-features = false }
+futures-test = { version = "0.3.30", default-features = false }
+
+url = { version = "2.5.0" }
+async-trait = { version = "0.1.77" }
+thiserror = { version = "1.0.57" }
+
+serde = { version = "1.0.197" }
+serde_json = { version = "1.0.114" }
+time = { version = "0.3.34", default-features = false }

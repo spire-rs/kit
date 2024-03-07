@@ -1,0 +1,58 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "robotxt"
+version = "0.6.0"
+readme = "./README.md"
+
+edition = { workspace = true }
+license = { workspace = true }
+authors = { workspace = true }
+
+repository = "https://github.com/xwde/kit/exclusion"
+homepage = "https://github.com/xwde/kit/exclusion"
+documentation = "https://docs.rs/robotxt"
+categories = ["asynchronous", "web-programming"]
+keywords = ["crawler", "scraper", "web", "framework"]
+description = """
+The implementation of the Robots.txt (or URL exclusion) protocol with
+the support of crawl-delay, sitemap and universal match extensions.
+"""
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[lib]
+path = "./lib.rs"
+
+[features]
+default = [
+    "builder",
+    "parser"
+]
+
+full = [
+    "builder",
+    "parser",
+    "optimal",
+    "serde"
+]
+
+builder = []
+parser = ["dep:nom", "dep:bstr", "dep:regex"]
+optimal = []
+serde = ["dep:serde", "url/serde", "serde/derive", "serde/rc"]
+
+[dependencies]
+url = { workspace = true }
+thiserror = { workspace = true }
+percent-encoding = { version = "2.3.1" }
+
+nom = { version = "7.1.3", optional = true }
+bstr = { version = "1.9.1", optional = true }
+regex = { version = "1.10.3", optional = true }
+serde = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

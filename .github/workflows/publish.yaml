@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+name: Publish
+
+jobs:
+  cd:
+    name: CD
+    strategy:
+      fail-fast: false
+      matrix:
+        crates: [ countio, robotxt, sitemapo ]
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Publish
+        run: cargo publish --token ${CRATES_TOKEN} -p ${CRATE_NAME}
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+          CRATE_NAME: ${{ matrix.crates }}
