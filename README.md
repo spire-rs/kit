@@ -14,7 +14,7 @@
   `std::io::{Read, Write, Seek}` and its async variants from `futures` and
   `tokio`.
 - [robotxt](./robotxt/): The implementation of the Robots.txt (or URL exclusion)
-  protocol with the support of crawl-delay, sitemap and universal match
+  protocol with the support of `crawl-delay`, `sitemap` and universal `*` match
   extensions.
 - [sitemapo](./sitemapo/): The implementation of the Sitemap (or URL inclusion)
   protocol with the support of txt, xml formats and video, image, and news
