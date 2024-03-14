@@ -13,10 +13,6 @@ debug/
 target/
 **/*.rs.bk
 
-# Output
-dist/
-build/
-
 # Environment
 env/
 .env

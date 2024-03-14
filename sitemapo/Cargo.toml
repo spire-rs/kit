@@ -9,11 +9,11 @@ edition = { workspace = true }
 license = { workspace = true }
 authors = { workspace = true }
 
-repository = "https://github.com/spire-rs/kit/inclusion"
-homepage = "https://github.com/spire-rs/kit/inclusion"
+repository = "https://github.com/spire-rs/kit"
+homepage = "https://github.com/spire-rs/kit"
 documentation = "https://docs.rs/sitemapo"
 categories = ["parser-implementations", "web-programming"]
-keywords = ["sitemap", "crawler", "parser"]
+keywords = ["sitemaps", "sitemap", "inclusion", "crawler", "scraper"]
 description = """
 The implementation of the Sitemap.xml (or URL inclusion) protocol with
 the support of txt & xml formats, and video, image, news extensions.

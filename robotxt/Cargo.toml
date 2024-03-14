@@ -9,11 +9,11 @@ edition = { workspace = true }
 license = { workspace = true }
 authors = { workspace = true }
 
-repository = "https://github.com/spire-rs/kit/exclusion"
-homepage = "https://github.com/spire-rs/kit/exclusion"
+repository = "https://github.com/spire-rs/kit"
+homepage = "https://github.com/spire-rs/kit"
 documentation = "https://docs.rs/robotxt"
 categories = ["asynchronous", "web-programming"]
-keywords = ["crawler", "scraper", "web", "framework"]
+keywords = ["robots", "robot", "exclusion", "crawler", "scraper"]
 description = """
 The implementation of the Robots.txt (or URL exclusion) protocol with
 the support of crawl-delay, sitemap and universal match extensions.

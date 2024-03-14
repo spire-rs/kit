@@ -9,8 +9,8 @@ edition = { workspace = true }
 license = { workspace = true }
 authors = { workspace = true }
 
-repository = "https://github.com/spire-rs/kit/countio"
-homepage = "https://github.com/spire-rs/kit/countio"
+repository = "https://github.com/spire-rs/kit"
+homepage = "https://github.com/spire-rs/kit"
 documentation = "https://docs.rs/countio"
 categories = ["parsing", "asynchronous"]
 keywords = ["byte", "tokio", "futures", "parsing"]
