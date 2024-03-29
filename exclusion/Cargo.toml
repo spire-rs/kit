@@ -51,7 +51,7 @@ percent-encoding = { version = "2.3.1" }
 
 nom = { version = "7.1.3", optional = true }
 bstr = { version = "1.9.1", optional = true }
-regex = { version = "1.10.3", optional = true }
+regex = { version = "1.10.4", optional = true }
 serde = { workspace = true, optional = true }
 
 [dev-dependencies]
