@@ -56,9 +56,9 @@ fn main() {
 - build the new `robots.txt` file in a declarative manner:
 
 ```rust
-use robotxt::RobotsBuilder;
+use robotxt::{RobotsBuilder, Result};
 
-fn main() -> Result<(), url::ParseError> {
+fn main() -> Result<()> {
     let txt = RobotsBuilder::default()
         .header("Robots.txt: Start")
         .group(["foobot"], |u| {

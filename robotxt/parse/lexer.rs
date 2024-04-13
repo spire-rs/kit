@@ -42,13 +42,13 @@ const NEWLINE: u8 = b'\n';
 const COMMENT: u8 = b'#';
 
 /// Returns true if the character code is neither a newline nor a carriage return.
-fn not_line_ending(c: u8) -> bool {
+const fn not_line_ending(c: u8) -> bool {
     c != NEWLINE && c != CARRIAGE
 }
 
 /// Returns true if the character code is neither a newline, a carriage return,
 /// nor a comment character.
-fn not_line_ending_or_comment(c: u8) -> bool {
+const fn not_line_ending_or_comment(c: u8) -> bool {
     c != NEWLINE && c != CARRIAGE && c != COMMENT
 }
 

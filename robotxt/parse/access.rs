@@ -1,3 +1,5 @@
+use std::fmt;
+
 /// The result of the `robots.txt` retrieval attempt.
 ///
 /// See [`Robots::from_access`].
@@ -52,7 +54,8 @@ pub enum AccessResult<'a> {
 
 impl AccessResult<'_> {
     /// Returns the textual representation of a status.
-    pub fn as_str(&self) -> &'static str {
+    #[must_use]
+    pub const fn as_str(&self) -> &'static str {
         match self {
             AccessResult::Successful(_) => "Successful",
             AccessResult::Redirect => "Redirect",
@@ -62,8 +65,8 @@ impl AccessResult<'_> {
     }
 }
 
-impl std::fmt::Display for AccessResult<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for AccessResult<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
     }
 }

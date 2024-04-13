@@ -1,11 +1,15 @@
-use std::io::{BufReader, Read};
+use std::io::{self, BufReader, Read};
 use std::sync::Arc;
+use std::time::Duration;
 
+#[cfg(feature = "serde")]
+use ::serde::{Deserialize, Serialize};
 use url::Url;
 
-use crate::BYTE_LIMIT;
 pub use access::AccessResult;
 use inner::RobotsInner;
+
+use crate::BYTE_LIMIT;
 
 mod access;
 mod inner;
@@ -13,8 +17,6 @@ mod lexer;
 mod parser;
 mod rule;
 
-#[cfg(feature = "serde")]
-use ::serde::{Deserialize, Serialize};
 #[cfg(feature = "serde")]
 mod serde;
 
@@ -62,6 +64,7 @@ pub const ALL_UAS: &str = "*";
 /// assert!(!r.is_relative_allowed("/example/nope.txt"));
 /// assert!(!r.is_relative_allowed("/invalid/path.txt"));
 /// ```
+#[must_use]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Robots {
@@ -87,6 +90,7 @@ impl Robots {
     /// assert!(!r.is_relative_allowed("/example/nope.txt"));
     /// assert!(!r.is_relative_allowed("/invalid/path.txt"));
     /// ```
+
     pub fn from_bytes(robots: &[u8], user_agent: &str) -> Self {
         let inner = RobotsInner::from_bytes(robots, user_agent);
         Self {
@@ -113,7 +117,7 @@ impl Robots {
     /// assert!(!r.is_relative_allowed("/example/nope.txt"));
     /// assert!(!r.is_relative_allowed("/invalid/path.txt"));
     /// ```
-    pub fn from_reader<R: Read>(reader: R, user_agent: &str) -> Result<Self, std::io::Error> {
+    pub fn from_reader<R: Read>(reader: R, user_agent: &str) -> io::Result<Self> {
         let reader = reader.take(BYTE_LIMIT as u64);
         let mut reader = BufReader::new(reader);
 
@@ -170,6 +174,7 @@ impl Robots {
     /// See [`RobotsBuilder::new`].
     ///
     /// [`RobotsBuilder::new`]: crate::RobotsBuilder::new
+    #[inline]
     #[cfg(feature = "builder")]
     #[cfg_attr(docsrs, doc(cfg(feature = "builder")))]
     pub fn builder() -> crate::RobotsBuilder {
@@ -195,6 +200,8 @@ impl Robots {
     /// assert_eq!(r.try_is_relative_allowed("/example/nope.txt"), Some(false));
     /// assert_eq!(r.try_is_relative_allowed("/invalid/path.txt"), None);
     /// ```
+    #[inline]
+    #[must_use]
     pub fn try_is_relative_allowed(&self, addr: &str) -> Option<bool> {
         self.inner.try_is_allowed(addr)
     }
@@ -217,6 +224,8 @@ impl Robots {
     /// assert!(!r.is_relative_allowed("/example/nope.txt"));
     /// assert!(!r.is_relative_allowed("/invalid/path.txt"));
     /// ```
+    #[inline]
+    #[must_use]
     pub fn is_relative_allowed(&self, addr: &str) -> bool {
         self.inner.is_allowed(addr)
     }
@@ -240,18 +249,16 @@ impl Robots {
     /// assert_eq!(r.try_is_absolute_allowed(&base.join("/example/nope.txt").unwrap()), Some(false));
     /// assert_eq!(r.try_is_absolute_allowed(&base.join("/invalid/path.txt").unwrap()), None);
     /// ```
+    #[must_use]
     pub fn try_is_absolute_allowed(&self, addr: &Url) -> Option<bool> {
         let path = addr.path().to_owned();
 
-        let query = addr
-            .query()
-            .map(|u| "?".to_owned() + u)
-            .unwrap_or("".to_owned());
+        let query = addr.query().map(|u| "?".to_owned() + u).unwrap_or_default();
 
         let frag = addr
             .fragment()
             .map(|u| "#".to_owned() + u)
-            .unwrap_or("".to_owned());
+            .unwrap_or_default();
 
         let relative = path + &query + &frag;
         self.inner.try_is_allowed(&relative)
@@ -277,6 +284,7 @@ impl Robots {
     /// assert!(!r.is_absolute_allowed(&base.join("/example/nope.txt").unwrap()));
     /// assert!(!r.is_absolute_allowed(&base.join("/invalid/path.txt").unwrap()));
     /// ```
+    #[must_use]
     pub fn is_absolute_allowed(&self, addr: &Url) -> bool {
         self.try_is_absolute_allowed(addr).unwrap_or(true)
     }
@@ -292,6 +300,8 @@ impl Robots {
     /// let r = Robots::from_always(false, "foobot");
     /// assert_eq!(r.is_always(), Some(false));
     /// ```
+    #[inline]
+    #[must_use]
     pub fn is_always(&self) -> Option<bool> {
         self.inner.is_always()
     }
@@ -310,6 +320,8 @@ impl Robots {
     /// let r = Robots::from_bytes(txt, "foobot-search");
     /// assert_eq!(r.user_agent(), "foobot");
     /// ```
+    #[inline]
+    #[must_use]
     pub fn user_agent(&self) -> &str {
         self.inner.user_agent()
     }
@@ -328,7 +340,9 @@ impl Robots {
     /// let r = Robots::from_bytes(txt, "foobot");
     /// assert_eq!(r.crawl_delay(), Some(Duration::from_secs(5)));
     /// ```
-    pub fn crawl_delay(&self) -> Option<std::time::Duration> {
+    #[inline]
+    #[must_use]
+    pub fn crawl_delay(&self) -> Option<Duration> {
         self.inner.crawl_delay()
     }
 
@@ -345,18 +359,24 @@ impl Robots {
     /// let r = Robots::from_bytes(txt, "foobot");
     /// assert_eq!(r.sitemaps().len(), 2);
     /// ```
+    #[inline]
+    #[must_use]
     pub fn sitemaps(&self) -> &[Url] {
         self.inner.sitemaps()
     }
 
     /// Returns the total amount of applied rules unless constructed
     /// with (or optimized to) the global rule.
+    #[inline]
+    #[must_use]
     pub fn len(&self) -> Option<usize> {
         self.inner.len()
     }
 
     /// Returns true if there are no applied rules i.e. it is constructed
     /// with (or optimized to) the global rule.
+    #[inline]
+    #[must_use]
     pub fn is_empty(&self) -> Option<bool> {
         self.inner.is_empty()
     }

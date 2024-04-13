@@ -1,17 +1,18 @@
 use serde::de::{Error, MapAccess, Visitor};
 use serde::ser::SerializeStruct;
+use serde::{Deserialize, Serialize};
 use serde::{Deserializer, Serializer};
 
 use crate::parse::inner::Rules;
 use crate::parse::rule::Rule;
 
-impl serde::Serialize for Rules {
+impl Serialize for Rules {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         match self {
-            Rules::Rules(rules) => {
+            Self::Rules(rules) => {
                 let (allow, disallow): (Vec<_>, Vec<_>) =
                     rules.iter().partition(|u| u.is_allowed());
                 let allow: Vec<_> = allow.iter().map(|u| u.pattern().to_string()).collect();
@@ -22,7 +23,7 @@ impl serde::Serialize for Rules {
                 s.serialize_field("disallow", &disallow)?;
                 s.end()
             }
-            Rules::Always(always) => {
+            Self::Always(always) => {
                 let mut s = serializer.serialize_struct("AlwaysRules", 1)?;
                 s.serialize_field("always", always)?;
                 s.end()
@@ -31,7 +32,7 @@ impl serde::Serialize for Rules {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for Rules {
+impl<'de> Deserialize<'de> for Rules {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

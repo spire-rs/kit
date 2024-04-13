@@ -22,8 +22,8 @@ impl Parser {
     pub fn parse_rules(directives: &[Directive], user_agent: &str) -> Self {
         let (longest_match, captures_rules) = Self::longest_match(directives, user_agent);
         let mut state = Self {
-            longest_match,
             captures_rules,
+            longest_match,
             ..Self::default()
         };
 
@@ -60,7 +60,7 @@ impl Parser {
         // Finds the longest `User-Agent` in the acceptable pool.
         let selected_ua = acceptable_uas
             .max_by(|lhs, rhs| lhs.len().cmp(&rhs.len()))
-            .unwrap_or(ALL_UAS.to_string());
+            .unwrap_or_else(|| ALL_UAS.to_string());
 
         // Determines if it should check non-assigned rules.
         let check_non_assigned = selected_ua == ALL_UAS;

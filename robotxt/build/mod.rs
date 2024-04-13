@@ -11,6 +11,7 @@ mod split;
 
 /// The set of formatted `user-agent` groups that can be written
 /// in the `robots.txt` compliant format.
+#[must_use]
 #[derive(Debug, Default, Clone)]
 pub struct RobotsBuilder {
     groups: Vec<GroupBuilder>,
@@ -110,7 +111,7 @@ impl fmt::Display for RobotsBuilder {
         let groups = groups.collect::<Vec<_>>().join("\n\n");
 
         let result = [header, Some(groups), footer];
-        let result = result.iter().filter_map(|u| u.clone());
+        let result = result.iter().filter_map(Clone::clone);
         let result = result.collect::<Vec<_>>().join("\n\n");
         write!(f, "{}", result.as_str())
     }

@@ -176,14 +176,14 @@ impl Rule {
     /// Returns true if the path matches the pattern.
     /// NOTE: Expects normalized relative path.
     pub fn is_match(&self, path: &str) -> bool {
-        match &self.wildcard {
-            None => path.starts_with(self.pattern.as_str()),
-            Some(wildcard) => wildcard.is_match(path),
-        }
+        self.wildcard.as_ref().map_or_else(
+            || path.starts_with(self.pattern.as_str()),
+            |wildcard| wildcard.is_match(path),
+        )
     }
 
     /// Returns true if allowed.
-    pub fn is_allowed(&self) -> bool {
+    pub const fn is_allowed(&self) -> bool {
         self.allow
     }
 

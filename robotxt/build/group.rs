@@ -6,7 +6,8 @@ use crate::paths::normalize_path;
 
 /// The single formatted `user-agent` group.
 ///
-/// See [crate::RobotsBuilder::group].
+/// See [`crate::RobotsBuilder::group`].
+#[must_use]
 #[derive(Debug, Default, Clone)]
 pub struct GroupBuilder {
     user_agents: HashSet<String>,

@@ -11,7 +11,7 @@ use crate::parse::rule::Rule;
 use crate::paths::normalize_path;
 use crate::BYTE_LIMIT;
 
-/// The [`Rules`] enum determines if the [RobotsInner::is_allowed] results
+/// The [`Rules`] enum determines if the [`RobotsInner::is_allowed`] results
 /// from the set of [`Rule`]s or the single provided global rule.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum Rules {
@@ -20,7 +20,8 @@ pub(crate) enum Rules {
 }
 
 /// The [`RobotsInner`] struct provides convenient and efficient storage for
-/// the data associated with certain user-agent for further matching.
+/// the data associated with a specific `user-agent` for further matching.
+#[must_use]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RobotsInner {
@@ -63,11 +64,11 @@ impl RobotsInner {
         // TODO: Remove overlapping rules.
 
         #[cfg(feature = "optimal")]
-        if rules.is_empty() || rules.iter().all(|r| r.is_allowed()) {
+        if rules.is_empty() || rules.iter().all(Rule::is_allowed) {
             // Empty or all allow.
             return Rules::Always(true);
         } else if rules.iter().all(|r| !r.is_allowed())
-            && rules.iter().rev().any(|r| r.is_universal())
+            && rules.iter().rev().any(Rule::is_universal)
         {
             // All disallow + universal disallow.
             // Universal rule should be one of the smallest, so reverse the iter.
@@ -89,6 +90,7 @@ impl RobotsInner {
 
     /// Returns `Some(true)` if there is an explicit `allow` or the global rule.
     /// NOTE: Expects relative path.
+    #[must_use]
     pub fn try_is_allowed(&self, path: &str) -> Option<bool> {
         match self.rules {
             Rules::Always(always) => Some(always),
@@ -104,13 +106,15 @@ impl RobotsInner {
 
     /// Returns true if the relative path is allowed for this set of rules.
     /// NOTE: Expects relative path.
+    #[must_use]
     pub fn is_allowed(&self, path: &str) -> bool {
         // Returns true is there is no rule matching the path.
         self.try_is_allowed(path).unwrap_or(true)
     }
 
     /// Returns `Some(_)` if the rules fully allow or disallow.
-    pub fn is_always(&self) -> Option<bool> {
+    #[must_use]
+    pub const fn is_always(&self) -> Option<bool> {
         match &self.rules {
             Rules::Rules(_) => None,
             Rules::Always(always) => Some(*always),
@@ -118,22 +122,26 @@ impl RobotsInner {
     }
 
     /// Returns the longest matching user-agent.
+    #[must_use]
     pub fn user_agent(&self) -> &str {
         self.user_agent.as_ref()
     }
 
     /// Returns the specified crawl-delay.
-    pub fn crawl_delay(&self) -> Option<Duration> {
+    #[must_use]
+    pub const fn crawl_delay(&self) -> Option<Duration> {
         self.crawl_delay
     }
 
     /// Returns all collected sitemaps.
+    #[must_use]
     pub fn sitemaps(&self) -> &[Url] {
         self.sitemaps.as_slice()
     }
 
     /// Returns the total amount of applied rules unless constructed
     /// with (or optimized to) the global rule.
+    #[must_use]
     pub fn len(&self) -> Option<usize> {
         match &self.rules {
             Rules::Rules(vec) => Some(vec.len()),
@@ -143,6 +151,7 @@ impl RobotsInner {
 
     /// Returns true if there are no applied rules i.e. it is constructed
     /// with (or optimized to) the global rule.
+    #[must_use]
     pub fn is_empty(&self) -> Option<bool> {
         self.len().map(|len| len == 0)
     }
@@ -151,8 +160,9 @@ impl RobotsInner {
 #[cfg(test)]
 #[cfg(feature = "optimal")]
 mod optimal_output {
-    use super::*;
     use crate::ALL_UAS;
+
+    use super::*;
 
     #[test]
     fn from() {
@@ -192,8 +202,9 @@ mod optimal_output {
 
 #[cfg(test)]
 mod precedence_rules {
-    use super::*;
     use crate::ALL_UAS;
+
+    use super::*;
 
     #[test]
     fn simple() {

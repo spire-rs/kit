@@ -1,7 +1,7 @@
 /// Splits multiline comments into lines and prefixes them with `#`.
 pub fn format_comment(txt: &str) -> String {
     txt.lines()
-        .map(|txt| txt.trim())
+        .map(str::trim)
         .filter(|txt| !txt.is_empty())
         .map(|txt| {
             if txt.starts_with('#') {
