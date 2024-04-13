@@ -19,7 +19,7 @@ impl<R: BufRead> BufRead for Counter<R> {
 
     fn consume(&mut self, amt: usize) {
         self.reader_bytes += amt;
-        self.inner.consume(amt)
+        self.inner.consume(amt);
     }
 }
 

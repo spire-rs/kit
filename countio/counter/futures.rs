@@ -17,7 +17,7 @@ impl<R: AsyncRead + Unpin> AsyncRead for Counter<R> {
         let pin = Pin::new(&mut counter.inner);
         let poll = pin.poll_read(ctx, buf);
         if let Poll::Ready(Ok(bytes)) = poll {
-            counter.reader_bytes += bytes
+            counter.reader_bytes += bytes;
         }
 
         poll

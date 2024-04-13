@@ -20,8 +20,8 @@ impl<R: AsyncRead + Unpin> AsyncRead for Counter<R> {
         let poll = pin.poll_read(ctx, buf);
         let bytes = buf.filled().len() - bytes;
 
-        if let Poll::Ready(Ok(())) = poll {
-            counter.reader_bytes += bytes
+        if matches!(poll, Poll::Ready(Ok(()))) {
+            counter.reader_bytes += bytes;
         }
 
         poll
