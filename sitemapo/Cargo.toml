@@ -42,10 +42,10 @@ extension = ["dep:isolang"]
 [dependencies]
 url = { workspace = true }
 thiserror = { workspace = true }
-countio = { version = "0.2.15" }
+countio = { version = "0.2.17" }
 
 quick-xml = { version = "0.31.0" }
-bytes = { version = "1.5.0", features = [] }
+bytes = { version = "1.6.0", features = [] }
 time = { workspace = true, features = ["parsing", "formatting"] }
 
 tokio = { workspace = true, optional = true }

@@ -1,14 +1,12 @@
-mod auto;
-mod entry;
-mod index;
-mod inner;
-mod plain;
-
-pub use auto::*;
 pub use entry::*;
 pub use index::*;
 pub(crate) use inner::*;
 pub use plain::*;
+
+mod entry;
+mod index;
+mod inner;
+mod plain;
 
 // TODO: Make builders take BufWrite.
 
