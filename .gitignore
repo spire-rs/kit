@@ -1,6 +1,7 @@
 # OS
 Thumbs.db
 .DS_Store
+*.pdb
 
 # Editors
 .vs/
@@ -11,6 +12,7 @@ Thumbs.db
 # Lang: Rust
 debug/
 target/
+Cargo.lock
 **/*.rs.bk
 
 # Environment

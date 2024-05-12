@@ -53,7 +53,7 @@ impl<W: AsyncWrite + Unpin> AsyncWrite for Counter<W> {
         let poll = pin.poll_write(ctx, buf);
 
         if let Poll::Ready(Ok(bytes)) = poll {
-            counter.writer_bytes += bytes
+            counter.writer_bytes += bytes;
         }
 
         poll

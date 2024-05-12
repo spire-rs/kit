@@ -30,12 +30,14 @@ impl<W: Write> Write for Counter<W> {
         Ok(bytes)
     }
 
+    #[inline]
     fn flush(&mut self) -> Result<()> {
         self.inner.flush()
     }
 }
 
 impl<D: Seek> Seek for Counter<D> {
+    #[inline]
     fn seek(&mut self, pos: SeekFrom) -> Result<u64> {
         self.inner.seek(pos)
     }

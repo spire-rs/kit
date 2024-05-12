@@ -37,6 +37,6 @@ impl Index {
 
 impl From<Url> for Index {
     fn from(location: Url) -> Self {
-        Index::new(location)
+        Self::new(location)
     }
 }

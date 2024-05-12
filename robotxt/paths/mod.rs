@@ -1,5 +1,5 @@
 pub use create::create_url;
-pub(crate) use normal::normalize_path;
+pub use normal::normalize_path;
 
 mod create;
 mod normal;

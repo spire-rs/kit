@@ -14,7 +14,7 @@ use crate::BYTE_LIMIT;
 /// The [`Rules`] enum determines if the [`RobotsInner::is_allowed`] results
 /// from the set of [`Rule`]s or the single provided global rule.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum Rules {
+pub enum Rules {
     Rules(Vec<Rule>),
     Always(bool),
 }
@@ -99,7 +99,7 @@ impl RobotsInner {
                 path => rules
                     .iter()
                     .find(|r| r.is_match(path))
-                    .map(|rule| rule.is_allowed()),
+                    .map(Rule::is_allowed),
             },
         }
     }

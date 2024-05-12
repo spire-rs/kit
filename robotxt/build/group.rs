@@ -144,9 +144,10 @@ impl Display for GroupBuilder {
             // Explicit Allow: * if no Disallows.
             // Used to interrupt the user-group i.e.
             // user-agent: a ..no rules.. user-agent: b
-            match self.rules_disallow.is_empty() {
-                true => Some("Allow: *".to_string()),
-                false => None,
+            if self.rules_disallow.is_empty() {
+                Some("Allow: *".to_string())
+            } else {
+                None
             }
         } else {
             let rd = self.rules_allow.iter();
@@ -155,7 +156,7 @@ impl Display for GroupBuilder {
         };
 
         let result = [header, agents, delay, disallows, allows, footer];
-        let result = result.iter().filter_map(|u| u.clone());
+        let result = result.iter().filter_map(Clone::clone);
         let result = result.collect::<Vec<_>>().join("\n");
         write!(f, "{}", result.as_str())
     }
