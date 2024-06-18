@@ -1,14 +1,14 @@
-mod auto;
-mod entry;
-mod index;
-mod inner;
-mod plain;
-
 pub use auto::*;
 pub use entry::*;
 pub use index::*;
 pub(crate) use inner::*;
 pub use plain::*;
+
+mod auto;
+mod entry;
+mod index;
+mod inner;
+mod plain;
 
 /// Core trait for the parser implementation.
 pub trait Parser<R: std::io::Read, D>: Sized {
@@ -41,7 +41,7 @@ pub trait AsyncParser<R: tokio::io::AsyncRead, D>: Sized {
     async fn close(self) -> Result<R, Self::Error>;
 }
 
-pub(crate) fn try_if_readable(records: usize, bytes: usize) -> crate::Result<()> {
+pub(crate) const fn try_if_readable(records: usize, bytes: usize) -> crate::Result<()> {
     use crate::record::{BYTE_LIMIT, RECORD_LIMIT};
 
     if records + 1 > RECORD_LIMIT {

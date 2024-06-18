@@ -8,7 +8,7 @@ use crate::{Error, Result};
 
 /// [`Index`] builder.
 #[derive(Debug, Clone, Default)]
-pub(crate) struct IndexFactory {
+pub struct IndexFactory {
     pub(crate) location: Option<Url>,
     pub(crate) modified: Option<OffsetDateTime>,
 }
@@ -53,7 +53,7 @@ impl<R> IndexParser<R> {
     }
 
     /// Creates a new instance with the given inner parser.
-    pub(crate) fn from_inner(inner: InnerParser<R, IndexFactory>) -> Self {
+    pub(crate) const fn from_inner(inner: InnerParser<R, IndexFactory>) -> Self {
         Self { inner }
     }
 
@@ -85,17 +85,17 @@ impl<R> IndexParser<R> {
         }
     }
 
-    pub(crate) fn write_event(&mut self, event: events::Event) -> Result<Output<Index>> {
+    pub(crate) fn write_event(&mut self, event: events::Event) -> Output<Index> {
         let tag = SITEMAP.as_bytes();
         let builder = self.inner.write_event(event, tag, Self::apply_inner);
 
         if let Ok(Output::Some(r)) = builder {
             if let Some(record) = r.build() {
-                return Ok(Output::Some(record));
+                return Output::Some(record);
             }
         }
 
-        Ok(Output::None)
+        Output::None
     }
 }
 
@@ -120,7 +120,7 @@ impl<R: std::io::BufRead> Parser<R, Index> for IndexParser<R> {
         loop {
             self.inner.try_if_readable()?;
             let event = self.inner.reader.read_event_into(&mut buf)?;
-            match self.write_event(event)? {
+            match self.write_event(event) {
                 Output::Some(record) => return Ok(Some(record)),
                 Output::None => {}
                 Output::End => return Ok(None),

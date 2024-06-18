@@ -4,7 +4,9 @@ use quick_xml::{events, Writer};
 use time::format_description::well_known::Iso8601;
 
 use crate::build::{Builder, InnerBuilder, CONFIG};
-use crate::record::*;
+use crate::record::{
+    Index, BYTE_LIMIT, LAST_MODIFIED, LOCATION, RECORD_LIMIT, SITEMAP, SITEMAP_INDEX,
+};
 use crate::{Error, Result};
 
 /// Sitemap index parser for the versatile XML file.
@@ -51,7 +53,7 @@ impl<W> IndexBuilder<W> {
     }
 
     /// Creates a new instance with the given inner parser.
-    pub(crate) fn from_inner(inner: InnerBuilder<W, Index>) -> Self {
+    pub(crate) const fn from_inner(inner: InnerBuilder<W, Index>) -> Self {
         Self { inner }
     }
 

@@ -5,7 +5,7 @@ use quick_xml::{events::Event, Reader};
 use crate::parse::try_if_readable;
 use crate::Result;
 
-pub(crate) enum Output<T> {
+pub enum Output<T> {
     /// Next record.
     Some(T),
     /// The event didn't result into the new record.
@@ -16,11 +16,11 @@ pub(crate) enum Output<T> {
 
 impl<T> From<Option<T>> for Output<T> {
     fn from(value: Option<T>) -> Self {
-        value.map(Output::Some).unwrap_or(Output::End)
+        value.map_or(Self::End, Self::Some)
     }
 }
 
-pub(crate) struct InnerParser<R, D> {
+pub struct InnerParser<R, D> {
     pub(crate) record: Option<D>,
     pub(crate) reader: Reader<Counter<R>>,
     pub(crate) records: usize,
@@ -113,6 +113,6 @@ impl<R, D> std::fmt::Debug for InnerParser<R, D> {
         f.debug_struct("InnerParser")
             .field("bytes", &self.reader.get_ref().reader_bytes())
             .field("records", &self.records)
-            .finish()
+            .finish_non_exhaustive()
     }
 }

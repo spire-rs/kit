@@ -3,7 +3,11 @@ use countio::Counter;
 use quick_xml::{events, Reader};
 use url::Url;
 
-use crate::{parse::*, record::*, Error};
+use crate::{
+    parse::{try_if_readable, EntryParser, IndexParser, InnerParser, Parser, PlainParser},
+    record::{Entry, SITEMAP_INDEX, URL_SET},
+    Error,
+};
 
 /// Sitemap type resolver.
 // TODO: Check for the plain txt sitemaps.
@@ -147,9 +151,9 @@ impl<R> AutoParser<R> {
     /// Returns minimal (no resolved indexes) total sitemaps amount.
     pub fn len(&self) -> usize {
         self.sitemaps.len()
-            + self.plain.is_some() as usize
-            + self.index.is_some() as usize
-            + self.entry.is_some() as usize
+            + usize::from(self.plain.is_some())
+            + usize::from(self.index.is_some())
+            + usize::from(self.entry.is_some())
     }
 }
 
@@ -199,7 +203,7 @@ where
             if let Some(sitemap) = self.sitemaps.pop() {
                 let reader = (fetcher)(sitemap)?;
                 if let Ok(sitemap) = Scanner::from_sync(reader) {
-                    self.replace_parser(sitemap)
+                    self.replace_parser(sitemap);
                 }
             }
 

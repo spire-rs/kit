@@ -8,7 +8,7 @@ use crate::{Error, Result};
 
 /// [`Entry`] builder.
 #[derive(Debug, Clone, Default)]
-pub(crate) struct EntryFactory {
+pub struct EntryFactory {
     location: Option<Url>,
     modified: Option<OffsetDateTime>,
     priority: Option<Priority>,
@@ -78,7 +78,7 @@ impl<R> EntryParser<R> {
     }
 
     /// Creates a new instance with the given inner parser.
-    pub(crate) fn from_inner(inner: InnerParser<R, EntryFactory>) -> Self {
+    pub(crate) const fn from_inner(inner: InnerParser<R, EntryFactory>) -> Self {
         Self { inner }
     }
 
@@ -114,17 +114,17 @@ impl<R> EntryParser<R> {
         }
     }
 
-    pub(crate) fn write_event(&mut self, event: events::Event) -> Result<Output<Entry>> {
+    pub(crate) fn write_event(&mut self, event: events::Event) -> Output<Entry> {
         let tag = URL.as_bytes();
         let builder = self.inner.write_event(event, tag, Self::apply_inner);
 
         if let Ok(Output::Some(r)) = builder {
             if let Some(record) = r.build() {
-                return Ok(Output::Some(record));
+                return Output::Some(record);
             }
         }
 
-        Ok(Output::None)
+        Output::None
     }
 }
 
@@ -149,7 +149,7 @@ impl<R: std::io::BufRead> Parser<R, Entry> for EntryParser<R> {
         loop {
             self.inner.try_if_readable()?;
             let event = self.inner.reader.read_event_into(&mut buf)?;
-            match self.write_event(event)? {
+            match self.write_event(event) {
                 Output::Some(record) => return Ok(Some(record)),
                 Output::None => {}
                 Output::End => return Ok(None),

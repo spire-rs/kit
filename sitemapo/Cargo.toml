@@ -42,15 +42,15 @@ extension = ["dep:isolang"]
 [dependencies]
 url = { workspace = true }
 thiserror = { workspace = true }
-countio = { version = "0.2.17" }
+countio = { version = "0.2" }
 
-quick-xml = { version = "0.31.0" }
-bytes = { version = "1.6.0", features = [] }
+quick-xml = { version = "0.31" }
+bytes = { version = "1.6", features = [] }
 time = { workspace = true, features = ["parsing", "formatting"] }
 
 tokio = { workspace = true, optional = true }
 async-trait = { workspace = true, optional = true }
-isolang = { version = "2.4.0", optional = true, features = [] }
+isolang = { version = "2.4", optional = true, features = [] }
 
 [dev-dependencies]
 time = { workspace = true, features = ["macros"] }

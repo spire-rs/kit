@@ -85,7 +85,7 @@ impl GroupBuilder {
     ///         u.crawl_delay(5)
     ///     });
     /// ```
-    pub fn crawl_delay(mut self, delay: u16) -> Self {
+    pub const fn crawl_delay(mut self, delay: u16) -> Self {
         self.delay = Some(delay);
         self
     }

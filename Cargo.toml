@@ -14,15 +14,15 @@ authors = ["Oleh Martsokha <o.martsokha@gmail.com>"]
 license = "MIT"
 
 [workspace.dependencies]
-tokio = { version = "1.37.0", default-features = false }
-futures-io = { version = "0.3.30", default-features = false }
-futures-util = { version = "0.3.30", default-features = false }
-futures-test = { version = "0.3.30", default-features = false }
+tokio = { version = "1.38", default-features = false }
+futures-io = { version = "0.3", default-features = false }
+futures-util = { version = "0.3", default-features = false }
+futures-test = { version = "0.3", default-features = false }
 
-url = { version = "2.5.0" }
-async-trait = { version = "0.1.80" }
-thiserror = { version = "1.0.60" }
+url = { version = "2.5" }
+async-trait = { version = "0.1" }
+thiserror = { version = "1.0" }
 
-serde = { version = "1.0.201" }
-serde_json = { version = "1.0.117" }
-time = { version = "0.3.36", default-features = false }
+serde = { version = "1.0" }
+serde_json = { version = "1.0" }
+time = { version = "0.3", default-features = false }

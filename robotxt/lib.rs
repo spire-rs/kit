@@ -9,8 +9,8 @@ pub use url;
 #[cfg(feature = "builder")]
 pub use build::{GroupBuilder, RobotsBuilder};
 #[cfg(feature = "parser")]
-pub use parse::{AccessResult, ALL_UAS, Robots};
-pub use paths::{BYTE_LIMIT, create_url};
+pub use parse::{AccessResult, Robots, ALL_UAS};
+pub use paths::{create_url, BYTE_LIMIT};
 
 /// Unrecoverable failure during `robots.txt` building or parsing.
 ///
@@ -53,10 +53,10 @@ mod parse;
 
 #[doc(hidden)]
 pub mod prelude {
-    pub use super::{Error, Result};
     #[cfg(feature = "builder")]
-        pub use super::build::{GroupBuilder, RobotsBuilder};
+    pub use super::build::{GroupBuilder, RobotsBuilder};
     #[cfg(feature = "parser")]
-    pub use super::parse::{AccessResult, ALL_UAS, Robots};
-    pub use super::paths::{BYTE_LIMIT, create_url};
+    pub use super::parse::{AccessResult, Robots, ALL_UAS};
+    pub use super::paths::{create_url, BYTE_LIMIT};
+    pub use super::{Error, Result};
 }

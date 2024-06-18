@@ -15,6 +15,7 @@ use crate::record::{Frequency, Priority};
 ///     .with_priority(Priority::MAX)
 ///     .with_frequency(Frequency::Daily);
 /// ```
+#[must_use]
 #[derive(Debug, Clone)]
 pub struct Entry {
     pub location: Url,
@@ -25,7 +26,7 @@ pub struct Entry {
 
 impl Entry {
     /// Creates a new instance with the given location.
-    pub fn new(location: Url) -> Self {
+    pub const fn new(location: Url) -> Self {
         Self {
             location,
             modified: None,
@@ -35,19 +36,19 @@ impl Entry {
     }
 
     /// Creates a new record with the given modify timestamp.
-    pub fn with_modified(mut self, modified: OffsetDateTime) -> Self {
+    pub const fn with_modified(mut self, modified: OffsetDateTime) -> Self {
         self.modified = Some(modified);
         self
     }
 
     /// Creates a new record with the given priority.
-    pub fn with_priority(mut self, priority: Priority) -> Self {
+    pub const fn with_priority(mut self, priority: Priority) -> Self {
         self.priority = Some(priority);
         self
     }
 
     /// Creates a new record with the given change frequency.
-    pub fn with_frequency(mut self, frequency: Frequency) -> Self {
+    pub const fn with_frequency(mut self, frequency: Frequency) -> Self {
         self.frequency = Some(frequency);
         self
     }
@@ -55,6 +56,6 @@ impl Entry {
 
 impl From<Url> for Entry {
     fn from(location: Url) -> Self {
-        Entry::new(location)
+        Self::new(location)
     }
 }

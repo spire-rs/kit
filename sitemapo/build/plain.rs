@@ -4,7 +4,7 @@ use countio::Counter;
 use url::Url;
 
 use crate::build::Builder;
-use crate::record::*;
+use crate::record::{BYTE_LIMIT, RECORD_LIMIT};
 use crate::{Error, Result};
 
 /// Sitemap builder for the simple TXT file that contains one URL per line.
@@ -144,6 +144,7 @@ mod tokio {
 #[cfg(test)]
 mod test {
     use std::io::BufWriter;
+
     use url::Url;
 
     use crate::build::{Builder, PlainBuilder};

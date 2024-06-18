@@ -51,8 +51,8 @@ pub mod record;
 
 #[doc(hidden)]
 pub mod prelude {
-    pub use super::{Error, Result};
     pub use super::build::*;
     pub use super::parse::*;
     pub use super::record::*;
+    pub use super::{Error, Result};
 }

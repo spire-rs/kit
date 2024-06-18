@@ -17,6 +17,7 @@ pub enum PriorityError {
 /// Valid values range from 0.0 to 1.0. This value does not affect how your
 /// pages are compared to pages on other sites. It only lets the search engines
 /// know which pages you deem most important for the crawlers.
+#[must_use]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Priority(f32);
 
@@ -46,7 +47,7 @@ impl Priority {
     /// assert_eq!(frequency.as_inner(), 1.0);
     /// ```
     pub fn new_fallback(priority: f32) -> Self {
-        Self(priority.max(0.0).min(1.0))
+        Self(priority.clamp(0.0, 1.0))
     }
 
     /// Tries to parse the string into the valid priority value.
@@ -63,7 +64,8 @@ impl Priority {
     }
 
     /// Returns the internal value.
-    pub fn as_inner(&self) -> f32 {
+    #[must_use]
+    pub const fn as_inner(&self) -> f32 {
         self.0
     }
 

@@ -11,6 +11,7 @@ use url::Url;
 /// let _ = Index::new(Url::parse("https://example.com/").unwrap())
 ///     .with_modified(datetime!(2020-01-01 0:00 UTC));
 /// ```
+#[must_use]
 #[derive(Debug, Clone)]
 pub struct Index {
     pub location: Url,
@@ -19,7 +20,7 @@ pub struct Index {
 
 impl Index {
     /// Creates a new record with the given location.
-    pub fn new(location: Url) -> Self {
+    pub const fn new(location: Url) -> Self {
         Self {
             location,
             modified: None,
@@ -27,11 +28,9 @@ impl Index {
     }
 
     /// Creates a new record with the given modify timestamp.
-    pub fn with_modified(self, modified: OffsetDateTime) -> Self {
-        Self {
-            modified: Some(modified),
-            ..self
-        }
+    pub const fn with_modified(mut self, modified: OffsetDateTime) -> Self {
+        self.modified = Some(modified);
+        self
     }
 }
 

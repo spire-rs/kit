@@ -107,7 +107,7 @@ impl fmt::Display for RobotsBuilder {
         let header = self.header.as_ref().map(|h| format_comment(h));
         let footer = self.footer.as_ref().map(|f| format_comment(f));
 
-        let groups = self.groups.iter().map(|u| u.to_string());
+        let groups = self.groups.iter().map(ToString::to_string);
         let groups = groups.collect::<Vec<_>>().join("\n\n");
 
         let result = [header, Some(groups), footer];

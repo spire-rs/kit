@@ -6,7 +6,7 @@ use time::format_description::well_known::iso8601;
 
 use crate::Error;
 
-pub(crate) const CONFIG: iso8601::EncodedConfig = iso8601::Config::DEFAULT
+pub const CONFIG: iso8601::EncodedConfig = iso8601::Config::DEFAULT
     .set_time_precision(iso8601::TimePrecision::Second {
         decimal_digits: NonZeroU8::new(2),
     })
