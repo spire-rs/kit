@@ -17,5 +17,4 @@
   protocol with the support of `crawl-delay`, `sitemap` and universal `*` match
   extensions.
 - [sitemapo](./sitemapo/): The implementation of the Sitemap (or URL inclusion)
-  protocol with the support of txt, xml formats and video, image, and news
-  extensions.
+  protocol with the support of txt and xml formats.

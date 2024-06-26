@@ -185,7 +185,7 @@ mod async_parser {
             loop {
                 self.inner.try_if_readable()?;
                 let event = self.inner.reader.read_event_into_async(&mut buf).await?;
-                match self.write_event(event)? {
+                match self.write_event(event) {
                     Output::Some(record) => return Ok(Some(record)),
                     Output::None => {}
                     Output::End => return Ok(None),

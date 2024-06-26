@@ -37,19 +37,17 @@ programming language with the support of `crawl-delay`, `sitemap` and universal
 ```rust
 use robotxt::Robots;
 
-fn main() {
-    let txt = r#"
-      User-Agent: foobot
-      Disallow: *
-      Allow: /example/
-      Disallow: /example/nope.txt
-    "#;
+let txt = r#"
+  User-Agent: foobot
+  Disallow: *
+  Allow: /example/
+  Disallow: /example/nope.txt
+"#;
 
-    let r = Robots::from_bytes(txt.as_bytes(), "foobot");
-    assert!(r.is_relative_allowed("/example/yeah.txt"));
-    assert!(!r.is_relative_allowed("/example/nope.txt"));
-    assert!(!r.is_relative_allowed("/invalid/path.txt"));
-}
+let r = Robots::from_bytes(txt.as_bytes(), "foobot");
+assert!(r.is_relative_allowed("/example/yeah.txt"));
+assert!(!r.is_relative_allowed("/example/nope.txt"));
+assert!(!r.is_relative_allowed("/invalid/path.txt"));
 ```
 
 - build the new `robots.txt` file in a declarative manner:
@@ -57,28 +55,25 @@ fn main() {
 ```rust
 use robotxt::{RobotsBuilder, Result};
 
-fn main() -> Result<()> {
-    let txt = RobotsBuilder::default()
-        .header("Robots.txt: Start")
-        .group(["foobot"], |u| {
-            u.crawl_delay(5)
-                .header("Rules for Foobot: Start")
-                .allow("/example/yeah.txt")
-                .disallow("/example/nope.txt")
-                .footer("Rules for Foobot: End")
-        })
-        .group(["barbot", "nombot"], |u| {
-            u.crawl_delay(2)
-                .disallow("/example/yeah.txt")
-                .disallow("/example/nope.txt")
-        })
-        .sitemap("https://example.com/sitemap_1.xml".try_into()?)
-        .sitemap("https://example.com/sitemap_1.xml".try_into()?)
-        .footer("Robots.txt: End");
+let txt = RobotsBuilder::default()
+    .header("Robots.txt: Start")
+    .group(["foobot"], |u| {
+        u.crawl_delay(5)
+            .header("Rules for Foobot: Start")
+            .allow("/example/yeah.txt")
+            .disallow("/example/nope.txt")
+            .footer("Rules for Foobot: End")
+    })
+    .group(["barbot", "nombot"], |u| {
+        u.crawl_delay(2)
+            .disallow("/example/yeah.txt")
+            .disallow("/example/nope.txt")
+    })
+    .sitemap("https://example.com/sitemap_1.xml".try_into()?)
+    .sitemap("https://example.com/sitemap_1.xml".try_into()?)
+    .footer("Robots.txt: End");
 
-    println!("{}", txt.to_string());
-    Ok(())
-}
+println!("{}", txt.to_string());
 ```
 
 ### Links

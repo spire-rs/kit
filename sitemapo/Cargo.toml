@@ -15,8 +15,8 @@ documentation = "https://docs.rs/sitemapo"
 categories = ["parser-implementations", "web-programming"]
 keywords = ["sitemaps", "sitemap", "inclusion", "crawler", "scraper"]
 description = """
-The implementation of the Sitemap.xml (or URL inclusion) protocol with
-the support of txt & xml formats, and video, image, news extensions.
+The implementation of the Sitemap.xml (or URL inclusion) protocol
+with the support of txt & xml formats.
 """
 
 [package.metadata.docs.rs]
@@ -44,7 +44,7 @@ url = { workspace = true }
 thiserror = { workspace = true }
 countio = { version = "0.2" }
 
-quick-xml = { version = "0.31" }
+quick-xml = { version = "0.32" }
 bytes = { version = "1.6", features = [] }
 time = { workspace = true, features = ["parsing", "formatting"] }
 

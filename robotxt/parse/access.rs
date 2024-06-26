@@ -1,4 +1,5 @@
 use std::fmt;
+use std::ops::Deref;
 
 /// The result of the `robots.txt` retrieval attempt.
 ///
@@ -6,13 +7,14 @@ use std::fmt;
 /// Also see 2.3.1. Access Results in the specification.
 ///
 /// [`Robots::from_access`]: crate::Robots::from_access
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum AccessResult<'a> {
     /// 2.3.1.1.  Successful Access
     ///
     /// If the crawler successfully downloads the robots.txt file, the
     /// crawler MUST follow the parseable rules.
     Successful(&'a [u8]),
+
     /// 2.3.1.2.  Redirects
     ///
     /// It's possible that a server responds to a robots.txt fetch request
@@ -27,6 +29,7 @@ pub enum AccessResult<'a> {
     /// If there are more than five consecutive redirects, crawlers MAY
     /// assume that the robots.txt file is unavailable.
     Redirect,
+
     /// 2.3.1.3.  "Unavailable" Status
     ///
     /// "Unavailable" means the crawler tries to fetch the robots.txt file
@@ -38,6 +41,7 @@ pub enum AccessResult<'a> {
     /// unavailable to the crawler, then the crawler MAY access any resources
     /// on the server.
     Unavailable,
+
     /// 2.3.1.4.  "Unreachable" Status
     ///
     /// If the robots.txt file is unreachable due to server or network
@@ -65,7 +69,17 @@ impl AccessResult<'_> {
     }
 }
 
+impl Deref for AccessResult<'_> {
+    type Target = str;
+
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        self.as_str()
+    }
+}
+
 impl fmt::Display for AccessResult<'_> {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
     }

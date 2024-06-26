@@ -17,8 +17,8 @@
 [coverage-url]: https://app.codecov.io/gh/spire-rs/kit
 
 The implementation of the Sitemap (or URL inclusion) protocol in the Rust
-programming language with the support of `txt` & `xml` formats, and `video`,
-`image`, `news` extensions (according to the Google's spec).
+programming language with the support of `txt` & `xml` formats (according to the
+Google's spec).
 
 ### Features
 

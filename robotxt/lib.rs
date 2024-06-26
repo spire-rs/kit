@@ -24,8 +24,13 @@ pub enum Error {
     CannotBeBase,
 
     /// Unable to create the expected path to the `robots.txt` file:
+    /// does not have a host.
+    #[error("does not have a host")]
+    NoHost,
+
+    /// Unable to create the expected path to the `robots.txt` file:
     /// unexpected address scheme, expected `http` or `https`.
-    #[error("addr scheme: `{scheme}`, expected `http` or `https`")]
+    #[error("scheme: `{scheme}`, expected `http` or `https`")]
     WrongScheme { scheme: String },
 
     /// Unable to create the expected path to the `robots.txt` file:
