@@ -2,7 +2,7 @@
 
 [package]
 name = "sitemapo"
-version = "0.4.0"
+version = "0.3.0"
 readme = "./README.md"
 description = """
 The implementation of the Sitemap.xml (or URL inclusion) protocol
