@@ -1,26 +1,36 @@
 # OS
 Thumbs.db
 .DS_Store
-*.pdb
 
-# Editors
+# IDE and Editors
 .vs/
 .vscode/
 .idea/
+.zed/
 .fleet/
 
-# Lang: Rust
+# Rust
 debug/
 target/
 Cargo.lock
 **/*.rs.bk
+*.pdb
 
-# Environment
-env/
-.env
+# Generated files
+coverage/
+*.lcov
+
+# Environment files
 .env*
 
 # Logs
 logs/
 *.log
 *.log*
+
+# Backup and temporary files
+*.bak
+*.backup
+*.tmp
+tmp/
+temp/

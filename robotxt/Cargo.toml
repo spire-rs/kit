@@ -2,57 +2,76 @@
 
 [package]
 name = "robotxt"
-version = "0.6.2"
+version = "0.7.0"
 readme = "./README.md"
-
-edition = { workspace = true }
-license = { workspace = true }
-authors = { workspace = true }
-
-repository = "https://github.com/spire-rs/kit"
-homepage = "https://github.com/spire-rs/kit"
-documentation = "https://docs.rs/robotxt"
-categories = ["asynchronous", "web-programming"]
-keywords = ["robots", "robot", "exclusion", "crawler", "scraper"]
 description = """
 The implementation of the Robots.txt (or URL exclusion) protocol with
 the support of crawl-delay, sitemap and universal match extensions.
 """
+keywords = ["robots", "robot", "exclusion", "crawler", "scraper"]
+categories = ["asynchronous", "web-programming"]
+
+rust-version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+
+authors = { workspace = true }
+repository = { workspace = true }
+documentation = "https://docs.rs/robotxt"
 
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
-[lib]
-path = "./lib.rs"
-
 [features]
-default = [
-    "builder",
-    "parser"
-]
+# Default feature set (both building and parsing)
+default = ["builder", "parser"]
 
-full = [
-    "builder",
-    "parser",
-    "optimal",
-    "serde"
-]
-
+# Builder support: writes robots.txt files with RobotsBuilder and GroupBuilder
 builder = []
-parser = ["dep:nom", "dep:bstr", "dep:regex"]
-optimal = []
-serde = ["dep:serde", "url/serde", "serde/derive", "serde/rc"]
+
+# Parser support: parses and matches robots.txt files with Robots
+parser = ["dep:bstr"]
+
+# Serde support: derives Serialize and Deserialize for Robots and Rule,
+# allowing parsed rules to be cached
+serde = ["dep:serde", "url/serde"]
 
 [dependencies]
-url = { version = "2.5" }
-thiserror = { version = "1.0" }
-percent-encoding = { version = "2.3" }
+# (De)serialization
+serde = { workspace = true, optional = true, features = ["derive"] }
 
-nom = { version = "7.1", optional = true }
-bstr = { version = "1.9", optional = true }
-regex = { version = "1.10", optional = true }
-serde = { version = "1.0", optional = true }
+# Derive macros & utilities
+thiserror = { workspace = true, features = [] }
+
+# Text processing
+bstr = { workspace = true, optional = true }
+
+# Domain datatypes
+url = { workspace = true, features = [] }
 
 [dev-dependencies]
-serde_json = { version = "1.0" }
+# (De)serialization
+serde_json = { workspace = true, features = [] }
+
+# Testing utilities
+wildcard = { workspace = true, features = [] }
+
+[[test]]
+name = "agents"
+required-features = ["parser"]
+
+[[test]]
+name = "builder"
+required-features = ["builder", "parser"]
+
+[[test]]
+name = "robots"
+required-features = ["parser"]
+
+[[test]]
+name = "serde"
+required-features = ["parser", "serde"]
+
+[lints]
+workspace = true

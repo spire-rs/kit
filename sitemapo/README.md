@@ -7,8 +7,8 @@
 
 **Check out other `spire` projects [here](https://github.com/spire-rs).**
 
-[action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yaml?branch=main&label=build&logo=github&style=flat-square
-[action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yaml
+[action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yml?branch=main&label=build&logo=github&style=flat-square
+[action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yml
 [crates-badge]: https://img.shields.io/crates/v/sitemapo.svg?logo=rust&style=flat-square
 [crates-url]: https://crates.io/crates/sitemapo
 [docs-badge]: https://img.shields.io/docsrs/sitemapo?logo=Docs.rs&style=flat-square
@@ -17,77 +17,81 @@
 [coverage-url]: https://app.codecov.io/gh/spire-rs/kit
 
 The implementation of the Sitemap (or URL inclusion) protocol in the Rust
-programming language with the support of `txt` & `xml` formats (according to the
-Google's spec).
-
-### Features
-
-> **Warning** : `extension` are not yet implemented.
-
-- `extension` to enable all XML sitemap extensions. **Enabled by default**.
-- `tokio` to enable asynchronous parsers & builders.
+programming language, with the support of text and XML sitemaps, sitemap
+indexes, and the image, video, news and `hreflang` extensions.
 
 ### Examples
 
-- automatic parser: `AutoParser`.
+- parse a sitemap of any format, and collect the nested sitemaps of an index:
 
 ```rust
-#[derive(Debug, thiserror::Error)]
-enum CustomError {
-    // ..
-    #[error("sitemap error: {0}")]
-    Sitemap(#[from] sitemapo::Error),
-    //..
+use sitemapo::{Parser, Record};
+
+let xml = br#"
+  <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap><loc>https://example.com/sitemap.xml</loc></sitemap>
+  </sitemapindex>
+"#;
+
+let mut nested = Vec::new();
+for record in Parser::new(xml.as_slice()) {
+    match record? {
+        Record::Entry(entry) => println!("{}", entry.location),
+        // Fetch and parse each nested sitemap in turn.
+        Record::Sitemap(sitemap) => nested.push(sitemap.location),
+    }
 }
 
-fn main() -> Result<(), CustomError> {
-    type SyncReader = std::io::BufReader<std::io::Cursor<Vec<u8>>>;
-    fn fetch(_: url::Url) -> Result<SyncReader, CustomError> {
-        // ..
-        unreachable!()
-    }
-
-    // Sitemaps listed in the robots.txt file.
-    let sitemaps = Vec::default();
-
-    let mut parser = sitemapo::parse::AutoParser::new(sitemaps);
-    while let Some(_record) = parser.try_sync(fetch)? {
-        // ..
-    }
-
-    Ok(())
-}
+assert_eq!(nested.len(), 1);
+# Ok::<(), sitemapo::Error>(())
 ```
 
-- automatic builder: `AutoBuilder`.
+- build a sitemap with the extensions:
 
 ```rust
-#[derive(Debug, thiserror::Error)]
-enum CustomError {
-    // ..
-    #[error("sitemap error: {0}")]
-    Sitemap(#[from] sitemapo::Error),
-    //..
-}
+use sitemapo::EntryBuilder;
+use sitemapo::record::{Alternate, Entry, Frequency, Image};
 
-fn main() -> Result<(), CustomError> {
-    Ok(())
-}
+let location: url::Url = "https://example.com/".parse().unwrap();
+let entry = Entry::new(location.clone())
+    .with_modified("2024-01-01T00:00:00Z".parse().unwrap())
+    .with_frequency(Frequency::Daily)
+    .with_image(Image::new("https://example.com/image.png".parse().unwrap()))
+    .with_alternate(Alternate::new("en", location));
+
+let mut builder = EntryBuilder::new(Vec::new());
+builder.write(&entry)?;
+let xml = String::from_utf8(builder.finish()?).unwrap();
+assert!(xml.contains("<image:loc>https://example.com/image.png</image:loc>"));
+# Ok::<(), sitemapo::Error>(())
 ```
 
-- Also includes parsers: `parse::{TxtParser, XmlParser}` and builders:
-  `build:{TxtBuilder, XmlBuilder}`.
+- `TextBuilder` and `IndexBuilder` build text sitemaps and sitemap indexes.
+
+- in asynchronous code, fetch the sitemap first, then parse the bytes, which
+  never blocks. Gzipped sitemaps can be decompressed while they are parsed,
+  e.g. with `flate2::read::GzDecoder`:
+
+```rust,ignore
+let body = reqwest::get("https://example.com/sitemap.xml").await?.bytes().await?;
+for record in sitemapo::Parser::new(&body[..]) {
+    // ..
+}
+```
 
 ### Links
 
 - [Sitemaps Overview](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview)
   on Google.com
-- [Sitemaps Best Practice](https://developers.google.com/search/blog/2014/10/best-practices-for-xml-sitemaps-rssatom)
+- [Image](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps),
+  [Video](https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps)
+  and [News](https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap)
+  sitemaps on Google.com
+- [Localized Versions](https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap)
   on Google.com
-- [Sitemaps Format](https://www.sitemaps.org/protocol.html) on Sitemap.org
-- [Sitemaps FAQ](https://www.sitemaps.org/faq.htm) on Sitemap.org
+- [Sitemaps Format](https://www.sitemaps.org/protocol.html) on Sitemaps.org
 
-### Other crates
+### Notes
 
-- [svmk/rust-sitemap](https://crates.io/crates/sitemap)
-- [goddtriffin/sitemap-rs](https://crates.io/crates/sitemap-rs)
+- Compressed (`.xml.gz`) sitemaps should be decompressed by the reader.
+- RSS and Atom feeds, which Google also accepts as sitemaps, are not supported.

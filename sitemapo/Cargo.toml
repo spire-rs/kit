@@ -2,56 +2,40 @@
 
 [package]
 name = "sitemapo"
-version = "0.3.0"
+version = "0.4.0"
 readme = "./README.md"
-
-edition = { workspace = true }
-license = { workspace = true }
-authors = { workspace = true }
-
-repository = "https://github.com/spire-rs/kit"
-homepage = "https://github.com/spire-rs/kit"
-documentation = "https://docs.rs/sitemapo"
-categories = ["parser-implementations", "web-programming"]
-keywords = ["sitemaps", "sitemap", "inclusion", "crawler", "scraper"]
 description = """
 The implementation of the Sitemap.xml (or URL inclusion) protocol
-with the support of txt & xml formats.
+with the support of txt & xml formats and the image, video, news
+and hreflang extensions.
 """
+keywords = ["sitemaps", "sitemap", "inclusion", "crawler", "scraper"]
+categories = ["parser-implementations", "web-programming"]
+
+rust-version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+
+authors = { workspace = true }
+repository = { workspace = true }
+documentation = "https://docs.rs/sitemapo"
 
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
-[lib]
-path = "./lib.rs"
-
-[features]
-default = ["extension"]
-full = ["extension", "tokio"]
-
-tokio = [
-    "dep:tokio",
-    "dep:async-trait",
-    "quick-xml/async-tokio",
-    "countio/tokio"
-]
-
-extension = ["dep:isolang"]
-
 [dependencies]
-url = { workspace = true }
-thiserror = { workspace = true }
-countio = { version = "0.2" }
+# Parsing
+quick-xml = { workspace = true, features = [] }
 
-quick-xml = { version = "0.32" }
-bytes = { version = "1.6", features = [] }
-time = { workspace = true, features = ["parsing", "formatting"] }
+# Derive macros & utilities
+thiserror = { workspace = true, features = [] }
 
-tokio = { workspace = true, optional = true }
-async-trait = { workspace = true, optional = true }
-isolang = { version = "2.4", optional = true, features = [] }
+# Primitive datatypes
+jiff = { workspace = true, features = ["std"] }
 
-[dev-dependencies]
-time = { workspace = true, features = ["macros"] }
-tokio = { workspace = true, features = ["rt", "macros"] }
+# Domain datatypes
+url = { workspace = true, features = [] }
+
+[lints]
+workspace = true

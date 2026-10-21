@@ -1,0 +1,70 @@
+name: Security
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "robotxt/**"
+      - "sitemapo/**"
+      - "Cargo.toml"
+      - "deny.toml"
+      - ".github/workflows/security.yml"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "robotxt/**"
+      - "sitemapo/**"
+      - "Cargo.toml"
+      - "deny.toml"
+      - ".github/workflows/security.yml"
+  schedule:
+    - cron: "0 6 * * 1" # Weekly on Monday at 6 AM
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deny:
+    name: Deny
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Install cargo-deny
+        run: cargo binstall cargo-deny --no-confirm --no-symlinks
+
+      - name: Run deny
+        run: cargo deny check all
+
+  secrets:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    # Only on push/PR, where the action scans just the new commits.
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          extra_args: --results=verified,unknown
