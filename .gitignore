@@ -2,27 +2,35 @@
 Thumbs.db
 .DS_Store
 
-# Editors
+# IDE and Editors
 .vs/
 .vscode/
 .idea/
+.zed/
 .fleet/
 
-# Lang: Rust
+# Rust
 debug/
 target/
+Cargo.lock
 **/*.rs.bk
+*.pdb
 
-# Output
-dist/
-build/
+# Generated files
+coverage/
+*.lcov
 
-# Environment
-env/
-.env
+# Environment files
 .env*
 
 # Logs
 logs/
 *.log
 *.log*
+
+# Backup and temporary files
+*.bak
+*.backup
+*.tmp
+tmp/
+temp/

@@ -1,0 +1,58 @@
+# Configuration for cargo-deny
+# See: https://embarkstudios.github.io/cargo-deny/
+
+[graph]
+all-features = true
+targets = [
+    { triple = "x86_64-unknown-linux-gnu" },
+    { triple = "x86_64-unknown-linux-musl" },
+    { triple = "x86_64-apple-darwin" },
+    { triple = "aarch64-apple-darwin" },
+    { triple = "x86_64-pc-windows-msvc" },
+]
+
+[advisories]
+# The path where the advisory database is cloned/fetched into
+db-path = "~/.cargo/advisory-db"
+# The url(s) of the advisory databases to use
+db-urls = ["https://github.com/rustsec/advisory-db"]
+# The lint level for unmaintained crates.
+unmaintained = "all"
+# The lint level for crates that have been yanked from their source registry
+yanked = "deny"
+# A list of advisory IDs to ignore
+ignore = []
+
+[licenses]
+# Confidence threshold for detecting a license from a license text (higher = stricter)
+confidence-threshold = 0.8
+# Private licenses are not allowed
+private = { ignore = false, registries = [] }
+# Warn if an allowed license is not used in the dependency graph
+unused-allowed-license = "allow"
+
+# List of explicitly allowed licenses (single licenses only)
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Unicode-3.0",
+]
+
+# For compound licenses, we'll be permissive and only block if they contain denied licenses
+exceptions = []
+
+[bans]
+# Lint level for when multiple versions of the same crate are detected
+multiple-versions = "warn"
+# Lint level for when a crate version requirement is `*`
+wildcards = "deny"
+# The graph highlighting used when creating dotgraphs for crates with multiple versions
+highlight = "all"
+
+[sources]
+# Lint level for what to happen when a crate from a crate registry that is not in the allow list
+unknown-registry = "deny"
+# Lint level for what to happen when a crate from a git repository that is not in the allow list
+unknown-git = "deny"
+# List of URLs for allowed crate registries
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

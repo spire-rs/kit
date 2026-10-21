@@ -1,0 +1,41 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "sitemapo"
+version = "0.4.0"
+readme = "./README.md"
+description = """
+The implementation of the Sitemap.xml (or URL inclusion) protocol
+with the support of txt & xml formats and the image, video, news
+and hreflang extensions.
+"""
+keywords = ["sitemaps", "sitemap", "inclusion", "crawler", "scraper"]
+categories = ["parser-implementations", "web-programming"]
+
+rust-version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+
+authors = { workspace = true }
+repository = { workspace = true }
+documentation = "https://docs.rs/sitemapo"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+# Parsing
+quick-xml = { workspace = true, features = [] }
+
+# Derive macros & utilities
+thiserror = { workspace = true, features = [] }
+
+# Primitive datatypes
+jiff = { workspace = true, features = ["std"] }
+
+# Domain datatypes
+url = { workspace = true, features = [] }
+
+[lints]
+workspace = true

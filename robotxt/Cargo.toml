@@ -1,0 +1,77 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "robotxt"
+version = "0.7.0"
+readme = "./README.md"
+description = """
+The implementation of the Robots.txt (or URL exclusion) protocol with
+the support of crawl-delay, sitemap and universal match extensions.
+"""
+keywords = ["robots", "robot", "exclusion", "crawler", "scraper"]
+categories = ["asynchronous", "web-programming"]
+
+rust-version = { workspace = true }
+edition = { workspace = true }
+license = { workspace = true }
+
+authors = { workspace = true }
+repository = { workspace = true }
+documentation = "https://docs.rs/robotxt"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[features]
+# Default feature set (both building and parsing)
+default = ["builder", "parser"]
+
+# Builder support: writes robots.txt files with RobotsBuilder and GroupBuilder
+builder = []
+
+# Parser support: parses and matches robots.txt files with Robots
+parser = ["dep:bstr"]
+
+# Serde support: derives Serialize and Deserialize for Robots and Rule,
+# allowing parsed rules to be cached
+serde = ["dep:serde", "url/serde"]
+
+[dependencies]
+# (De)serialization
+serde = { workspace = true, optional = true, features = ["derive"] }
+
+# Derive macros & utilities
+thiserror = { workspace = true, features = [] }
+
+# Text processing
+bstr = { workspace = true, optional = true }
+
+# Domain datatypes
+url = { workspace = true, features = [] }
+
+[dev-dependencies]
+# (De)serialization
+serde_json = { workspace = true, features = [] }
+
+# Testing utilities
+wildcard = { workspace = true, features = [] }
+
+[[test]]
+name = "agents"
+required-features = ["parser"]
+
+[[test]]
+name = "builder"
+required-features = ["builder", "parser"]
+
+[[test]]
+name = "robots"
+required-features = ["parser"]
+
+[[test]]
+name = "serde"
+required-features = ["parser", "serde"]
+
+[lints]
+workspace = true

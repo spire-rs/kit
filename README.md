@@ -3,19 +3,15 @@
 [![Build Status][action-badge]][action-url]
 [![Crate Coverage][coverage-badge]][coverage-url]
 
-[action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yaml?branch=main&label=build&logo=github&style=flat-square
-[action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yaml
+[action-badge]: https://img.shields.io/github/actions/workflow/status/spire-rs/kit/build.yml?branch=main&label=build&logo=github&style=flat-square
+[action-url]: https://github.com/spire-rs/kit/actions/workflows/build.yml
 [coverage-badge]: https://img.shields.io/codecov/c/github/spire-rs/kit?logo=codecov&logoColor=white&style=flat-square
 [coverage-url]: https://app.codecov.io/gh/spire-rs/kit
 
 #### Crates:
 
-- [countio]('./countio/): The wrapper struct to enable byte counting for
-  std::io::Read and std::io::Write and its asynchronous variants from futures
-  and tokio.
-- [robotxt]('./exclusion/): The implementation of the Robots.txt (or URL
-  exclusion) protocol with the support of crawl-delay, sitemap and universal
-  match extensions.
-- [sitemapo]('./inclusion/): The implementation of the Sitemap (or URL
-  inclusion) protocol with the support of txt, xml formats and video, image, and
-  news extensions.
+- [robotxt](./robotxt/): The implementation of the Robots.txt (or URL exclusion)
+  protocol with the support of `crawl-delay`, `sitemap` and universal `*` match
+  extensions.
+- [sitemapo](./sitemapo/): The implementation of the Sitemap (or URL inclusion)
+  protocol with the support of txt and xml formats.
