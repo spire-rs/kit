@@ -167,10 +167,6 @@ jobs:
         uses: obi1kenobi/cargo-semver-checks-action@v2
         with:
           feature-group: all-features
-          # The published sitemapo 0.2.0 no longer builds (its `timext`
-          # dependency is yanked), so it can't be the baseline. Remove once
-          # sitemapo 0.3.0 is published.
-          exclude: sitemapo
 
   machete:
     name: Machete

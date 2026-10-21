@@ -31,9 +31,17 @@ jobs:
       - name: Cache cargo registry and build
         uses: Swatinem/rust-cache@v2
 
+      # Runs before publishing, so a missing version stops the release.
+      # `cargo metadata --no-deps` needs no Cargo.lock, which is not committed.
       - name: Get version
         id: version
-        run: echo "VERSION=$(cargo pkgid -p ${{ inputs.crate }} | sed 's/.*[#@]//')" >> $GITHUB_OUTPUT
+        env:
+          CRATE: ${{ inputs.crate }}
+        run: |
+          set -euo pipefail
+          version=$(cargo metadata --no-deps --format-version 1 \
+            | jq -er --arg crate "$CRATE" '.packages[] | select(.name == $crate) | .version')
+          echo "VERSION=$version" >> "$GITHUB_OUTPUT"
 
       - name: Publish
         run: cargo publish -p ${{ inputs.crate }}
