@@ -13,7 +13,6 @@ use crate::path::{normalize, normalize_path};
 /// RFC 9309: `*` matches any sequence of characters, `$` at the end of the
 /// pattern matches the end of the URL, and any other pattern matches every
 /// URL it is a prefix of.
-#[must_use]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rule {

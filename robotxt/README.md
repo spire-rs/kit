@@ -3,7 +3,6 @@
 [![Build Status][action-badge]][action-url]
 [![Crate Docs][docs-badge]][docs-url]
 [![Crate Version][crates-badge]][crates-url]
-[![Crate Coverage][coverage-badge]][coverage-url]
 
 **Check out other `spire` projects [here](https://github.com/spire-rs).**
 
@@ -12,9 +11,8 @@
 [crates-badge]: https://img.shields.io/crates/v/robotxt.svg?logo=rust&style=flat-square
 [crates-url]: https://crates.io/crates/robotxt
 [docs-badge]: https://img.shields.io/docsrs/robotxt?logo=Docs.rs&style=flat-square
-[docs-url]: http://docs.rs/robotxt
-[coverage-badge]: https://img.shields.io/codecov/c/github/spire-rs/kit?logo=codecov&logoColor=white&style=flat-square
-[coverage-url]: https://app.codecov.io/gh/spire-rs/kit
+[docs-url]: https://docs.rs/robotxt
+
 The implementation of the robots.txt (or URL exclusion) protocol in the Rust
 programming language, following [RFC 9309], with the support of the
 `crawl-delay` and `sitemap` extensions.
